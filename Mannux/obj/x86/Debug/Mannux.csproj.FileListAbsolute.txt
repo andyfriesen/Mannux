@@ -1,0 +1,6 @@
+C:\projects\Mannux\Mannux-xna\Mannux\bin\x86\Debug\Mannux.exe
+C:\projects\Mannux\Mannux-xna\Mannux\bin\x86\Debug\Mannux.pdb
+C:\projects\Mannux\Mannux-xna\Mannux\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\projects\Mannux\Mannux-xna\Mannux\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\projects\Mannux\Mannux-xna\Mannux\obj\x86\Debug\Mannux.exe
+C:\projects\Mannux\Mannux-xna\Mannux\obj\x86\Debug\Mannux.pdb
