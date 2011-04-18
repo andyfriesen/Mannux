@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Sprites {
 
-    interface ISprite : IDisposable {
+    interface ISprite {
         int Width { get; }
         int Height { get; }
         int NumFrames { get; }

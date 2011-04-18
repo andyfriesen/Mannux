@@ -6,7 +6,7 @@ namespace Entities.Enemies {
         protected int hp = 0;
         protected int damage = 0;
 
-        public Enemy(Engine e, ISprite s)
+        public Enemy(Engine e, BitmapSprite s)
             : base(e, s) { }
 
         void Die() {

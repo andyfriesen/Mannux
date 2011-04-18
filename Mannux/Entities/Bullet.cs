@@ -6,7 +6,7 @@ namespace Entities {
 
     class Bullet : Entity {
         public Bullet(Engine e, float startx, float starty, Dir d) :
-            base(e, (Sprites.ISprite)e.sprites.Load("bullet.txt"))
+            base(e, e.BulletSprite)
         {
             UpdateState = new StateHandler(CheckCollision);
 

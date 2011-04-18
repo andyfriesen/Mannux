@@ -46,6 +46,15 @@
       <Output>C:\projects\Mannux\Mannux-xna\Mannux\bin\x86\Debug\Content\tabpis.xnb</Output>
       <Time>2011-04-17T10:30:41.9483362-07:00</Time>
     </Item>
+    <Item>
+      <Source>door.png</Source>
+      <Name>door</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\projects\Mannux\Mannux-xna\Mannux\bin\x86\Debug\Content\door.xnb</Output>
+      <Time>2011-04-17T22:10:46.635867-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

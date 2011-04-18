@@ -11,7 +11,7 @@ namespace Entities
 		int Newx, Newy;
 		
 		public Door(Engine e,int startx, int starty, Dir face, string mapname, int newx, int newy) : 
-			base(e, (Sprites.ISprite)e.sprites.Load("door.txt"))
+			base(e, e.DoorSprite)
 		{
 			engine=e;
 
@@ -45,10 +45,10 @@ namespace Entities
 		// player states
 		public void CollisionThings()
 		{
-			int px=engine.cameratarget.X;
-			int py=engine.cameratarget.Y;
-			int pw=engine.cameratarget.Width;
-			int ph=engine.cameratarget.Height;			
+			int px=engine.cameraTarget.X;
+			int py=engine.cameraTarget.Y;
+			int pw=engine.cameraTarget.Width;
+			int ph=engine.cameraTarget.Height;			
 			
 			//door opening/closing stuff
 			if(engine.DetectInYCoords(this) is Player) //make sure y coords match up

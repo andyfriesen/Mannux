@@ -1,4 +1,3 @@
-// created on 30/06/2002 at 11:15 PM
 
 namespace Entities.Enemies {
 
@@ -7,8 +6,7 @@ namespace Entities.Enemies {
 
 
         public Hopper(Engine e, int startx, int starty)
-            : base(e, (Sprites.ISprite)e.sprites.Load("ripper.txt"))//e.LoadSpriteImage("ripper.txt"))
-        {
+            : base(e, e.RipperSprite) {
             x = startx;
             y = starty;
             delay = 0;

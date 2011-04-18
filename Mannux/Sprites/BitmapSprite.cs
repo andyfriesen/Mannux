@@ -4,68 +4,41 @@
 
 using Cataract;
 
-using System.Drawing;
-
 using Sprites;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Sprites {
 
-    class BitmapSprite : ISprite {
-        IImage[] frames;
-        int width, height;
+    class BitmapSprite {
+        int width;
+        int height;
+        int rowLength;
         Rectangle hotspot;
-        IGraph graph;
+        Texture2D tex;
+        XNAGraph graph;
 
-        public BitmapSprite(IGraph g, Import.Sprite s) {
+        public BitmapSprite(XNAGraph g, string assetName, int cellWidth, int cellHeight, int rowLength, Rectangle hotspot) {
             graph = g;
-            frames = new IImage[s.NumFrames];
-            width = s.Width;
-            height = s.Height;
-            hotspot = s.HotSpot;
 
-            int i = 0;
-            foreach (Bitmap b in s) {
-                BitmapData bd = b.LockBits(
-                        new Rectangle(0, 0, b.Width, b.Height),
-                        ImageLockMode.ReadOnly,
-                        PixelFormat.Format32bppArgb);
-
-                frames[i] = graph.CreateImage(b.Width, b.Height, bd.Scan0);
-
-                b.UnlockBits(bd);
-                i++;
-            }
-
+            tex = g.LoadImage(assetName);
+            this.width = cellWidth;
+            this.height = cellHeight;
+            this.rowLength = rowLength;
+            this.hotspot = hotspot;
         }
 
         public int Width { get { return width; } }
         public int Height { get { return height; } }
-        public int NumFrames { get { return frames.Length; } }
         public Rectangle HotSpot { get { return hotspot; } }
 
-        /*public IImage this[int idx]
-        {
-                get	{	return	frames[idx];	}
-        }*/
-
         public virtual void Draw(int x, int y, int frame) {
-            graph.Blit(frames[frame], x, y, true);
-        }
-
-
-        // IDisposable
-        int disposestate = 0;
-        public void Dispose() {
-            if (disposestate != 0)
-                return;
-
-            disposestate = 1;
-            foreach (IImage i in frames)
-                i.Dispose();
-
-            frames = null;
-
-            disposestate = 2;
+            var row = frame / rowLength;
+            var col = frame % rowLength;
+            var left = col * (width + 1);
+            var top = row * (height + 1);
+            var slice = new Rectangle(1 + left, 1 + top, width, height);
+            graph.Blit(tex, new Vector2(x, y), slice);
         }
     }
 

@@ -25,6 +25,7 @@ namespace Editor {
         }
 
         public void MouseClick(MouseEventArgs e) {
+#if false
             int tilex = (e.X + engine.XWin) / engine.tileset.Width;
             int tiley = (e.Y + engine.YWin) / engine.tileset.Height;
 
@@ -55,22 +56,27 @@ namespace Editor {
                 curtile = engine.map[curlayer][tilex, tiley];
             else
                 engine.map[curlayer][tilex, tiley] = curtile;
+#endif
         }
 
         public void KeyPress(KeyEventArgs e) {
+#if false
             if (e.KeyCode == Keys.A) {
                 if (curtile < engine.tileset.NumTiles) curtile++;
             }
             if (e.KeyCode == Keys.Z) {
                 if (curtile > 0) curtile--;
             }
+#endif
         }
 
         public void RenderHUD() {
+#if false
             int x = 2;
             int y = engine.graph.YRes - 18;
 
             engine.graph.Blit(engine.tileset[curtile], x, y, false);
+#endif
         }
     }
 }

@@ -6,7 +6,8 @@ namespace Entities.Enemies
 	{	
 		bool flying=false;
 		
-		public Skree(Engine e,int startx, int starty) : base(e,(Sprites.ISprite)e.sprites.Load("ripper.txt"))//e.LoadSpriteImage("ripper.txt"))
+		public Skree(Engine e,int startx, int starty)
+            : base(e, e.RipperSprite)
 		{
 			x=startx;
 			y=starty;

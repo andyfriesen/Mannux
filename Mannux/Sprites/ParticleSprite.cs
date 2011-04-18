@@ -21,12 +21,12 @@ namespace Sprites {
         const int maxparticles = 15;
 
         Particle[] particles = new Particle[maxparticles];
-        IGraph graph;
+        XNAGraph graph;
         float direction;		// in degrees
         byte r, g, b, a;			// colour
         Rectangle hotspot;
 
-        public ParticleSprite(IGraph g, float d) {
+        public ParticleSprite(XNAGraph g, float d) {
             graph = g;
             direction = d;
             hotspot = new Rectangle(0, 0, 16, 16);

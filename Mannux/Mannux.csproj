@@ -71,6 +71,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
@@ -86,30 +87,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editor\AutoSelectionThing.cs">
+    <None Include="Editor\AutoSelectionThing.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\copypastemode.cs" />
-    <Compile Include="Editor\editor.cs" />
-    <Compile Include="Editor\EntityEditMode.cs" />
-    <Compile Include="Editor\IEditorState.cs" />
-    <Compile Include="Editor\MapEntPropertiesView.cs">
+    </None>
+    <None Include="Editor\copypastemode.cs" />
+    <None Include="Editor\editor.cs" />
+    <None Include="Editor\EntityEditMode.cs" />
+    <None Include="Editor\IEditorState.cs" />
+    <None Include="Editor\MapEntPropertiesView.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\MapInfoView.cs">
+    </None>
+    <None Include="Editor\MapInfoView.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\NewMapDlg.cs">
+    </None>
+    <None Include="Editor\NewMapDlg.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\obstructionmode.cs" />
-    <Compile Include="Editor\TileSetMode.cs" />
-    <Compile Include="Editor\TileSetPreview.cs">
+    </None>
+    <None Include="Editor\obstructionmode.cs" />
+    <None Include="Editor\TileSetMode.cs" />
+    <None Include="Editor\TileSetPreview.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\Util.cs">
+    </None>
+    <None Include="Editor\Util.cs">
       <SubType>Component</SubType>
-    </Compile>
+    </None>
     <Compile Include="AnimState.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Engine.cs" />
@@ -122,9 +123,6 @@
     <Compile Include="Entities\Enemies\Skree.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Player.cs" />
-    <Compile Include="Cataract\IGraph.cs" />
-    <Compile Include="Cataract\IImage.cs" />
-    <Compile Include="Cataract\IImageArray.cs" />
     <Compile Include="Import\Geo\Line.cs" />
     <Compile Include="Import\Geo\Point.cs" />
     <Compile Include="Import\ImageSprite.cs" />
@@ -143,13 +141,11 @@
     <Compile Include="Import\VectorObstructionMap.cs" />
     <Compile Include="Import\VergePal.cs" />
     <Compile Include="Cataract\OpenGLFont.cs" />
-    <Compile Include="Cataract\OpenGLGraph.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Cataract\XNAGraph.cs">
     </Compile>
-    <Compile Include="Cataract\OpenGLImage.cs" />
-    <Compile Include="Cataract\OpenGLImageArray.cs" />
     <Compile Include="Input\IInputDevice.cs" />
     <Compile Include="Input\InputHandler.cs" />
+    <Compile Include="Input\KeyboardDevice.cs" />
     <Compile Include="Input\X360Gamepad.cs" />
     <Compile Include="IUpdatable.cs" />
     <Compile Include="MannuxControllers.cs" />
@@ -159,8 +155,6 @@
     <Compile Include="Sprites\BitmapSprite.cs" />
     <Compile Include="Sprites\ISprite.cs" />
     <Compile Include="Sprites\ParticleSprite.cs" />
-    <Compile Include="Sprites\TabbySprite.cs" />
-    <Compile Include="TileSet.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="Vector.cs" />
   </ItemGroup>

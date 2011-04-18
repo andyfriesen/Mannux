@@ -39,7 +39,7 @@ namespace Entities {
         protected float x = 0, y = 0;				//!< Position
         protected int width, height;				//!< for convenience.  Size of the entity. (same as the sprite's hotspot)
         protected float vx = 0, vy = 0;				//!< Velocity
-        public ISprite sprite;					//!< Sprite
+        public BitmapSprite sprite;					//!< Sprite
         public AnimState anim = new AnimState();	//!< Sprite animation state
         protected Dir direction = Dir.left;		//!< Which way is the entity facing?
 
@@ -49,7 +49,7 @@ namespace Entities {
 
         protected Engine engine;
 
-        public Entity(Engine e, ISprite s) {
+        public Entity(Engine e, BitmapSprite s) {
             engine = e;
             sprite = s;
 
@@ -64,11 +64,6 @@ namespace Entities {
         protected virtual void Update() {
             UpdateState();
             anim.Update();
-        }
-
-        public void Dispose() {
-            engine.sprites.Free(sprite);
-            sprite = null;
         }
 
         public bool Touches(Entity e) {

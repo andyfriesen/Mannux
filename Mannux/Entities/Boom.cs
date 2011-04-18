@@ -6,7 +6,8 @@ namespace Entities
 {
 	class Boom : Entity
 	{	
-		public Boom(Engine e, float startx,float starty) : base(e,(Sprites.ISprite)e.sprites.Load("boom.txt"))//e.LoadSpriteImage("boom.txt"))
+		public Boom(Engine e, float startx,float starty) 
+            : base(e, e.BoomSprite)
 		{
 			UpdateState=new StateHandler(CheckCollision);
 			

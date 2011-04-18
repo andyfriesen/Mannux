@@ -9,12 +9,12 @@ using Entities;
 using Entities.Enemies;
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 class Engine : Game {
     // for convenience.  I don't want to mess with stupid proper OOPness for
@@ -23,16 +23,15 @@ class Engine : Game {
 
     // END HACK
 
-
-    public OpenGLForm graph;			// graphics viewport
+    public XNAGraph graph;
+    private GraphicsDeviceManager graphics;
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
     public Map map;
-    public TileSet tileset;
-    public Entity cameratarget;	// The engine focuses the camera on this entity
+    public BitmapSprite tileset;
+    public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
     public Timer time;
-    public Import.TileSet ts;				// purely for the editor's benefit
-    public Editor.Editor editor;
+    //public Editor.Editor editor;
     public VectorObstructionMap obs;
 
     public ArrayList entities = new ArrayList();			// entities currently on the map
@@ -43,27 +42,37 @@ class Engine : Game {
     int xwin = 0;
     int ywin = 0;
 
+    public Engine() {
+        graphics = new GraphicsDeviceManager(this);
+        Content.RootDirectory = "Content";
+    }
+
+    protected override void Initialize() {
+        base.Initialize();
+    }
+
     protected override void LoadContent() {
-        ts = ImageTileSet.Load("mantiles.png", 16, 16, 756);
-
-        tilesets = new TileSetController(graph);
-        sprites = new SpriteController(graph);
-
+        graph = new XNAGraph(graphics.GraphicsDevice, this.Content);
         input = new InputHandler();
 
+        tileset = new BitmapSprite(graph, "mantiles", 16, 16, 19, new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16));
+        TabbySprite = new BitmapSprite(graph, "tabpis", 64, 64, 8, new Rectangle(0, 0, 64, 64));
+        DoorSprite = new BitmapSprite(graph, "door", 16, 64, 7, new Rectangle(0, 0, 16, 64));
+        RipperSprite = new BitmapSprite(graph, "ripper", 16, 32, 4, new Rectangle(0, 0, 16, 32));
+        BoomSprite = new BitmapSprite(graph, "boom", 16, 16, 7, new Rectangle(0, 0, 16, 16));
+        BulletSprite = new BitmapSprite(graph, "bullet", 8, 8, 8, new Rectangle(0, 0, 8, 8));
+
         player = new Player(this);
-        cameratarget = player;
+        cameraTarget = player;
         player.X = player.Y = 32;	// arbitrary, if the map doesn't stipulate a starting point.
 
-        //map=v2Map.Load("map00.map");
+        map = v2Map.Load("map00.map");
         MapSwitch("data/maps/test2.map");
         obs = new VectorObstructionMap(map.Obs);
 
-        tileset = new TileSet(graph, ts);
-
         time = new Timer(100);
 
-        editor = new Editor.Editor(this);
+        //editor = new Editor.Editor(this);
     }
 
     /* 
@@ -73,7 +82,6 @@ class Engine : Game {
      */
     void OnClose(object o, CancelEventArgs e) {
         e.Cancel = true;
-        graph.Closing -= new CancelEventHandler(OnClose);
 
         killflag = true;
     }
@@ -83,7 +91,7 @@ class Engine : Game {
     public void Execute() {
         int frames = 0, fps = 0, timedelta = 0;
 
-        Init();
+        //Init();
 
         int t = time;
         while (!killflag) {
@@ -94,7 +102,7 @@ class Engine : Game {
 
                 //-- temp hack
                 if (input.Keyboard.Button(1)) {
-                    editor.Execute();
+                    //editor.Execute();
                     t = time;					// so the engine doesn't think it has to catch up.
                 }
                 //--
@@ -106,15 +114,27 @@ class Engine : Game {
 
             frames++;
             Render();
-            graph.ShowPage();
 
             if (timedelta >= 100) {
                 fps = frames;
                 frames = 0;
                 timedelta = 0;
-                graph.Text = String.Format("Mannux - {0}fps", fps);
+                //graph.Text = String.Format("Mannux - {0}fps", fps);
             }
         }
+    }
+
+    protected override void Update(GameTime gameTime) {
+        base.Update(gameTime);
+        input.Poll();
+        ProcessEntities();
+    }
+
+    protected override void Draw(GameTime gameTime) {
+        base.Draw(gameTime);
+        graph.Begin();
+        Render();
+        graph.End();
     }
 
     void ProcessEntities() {
@@ -122,7 +142,6 @@ class Engine : Game {
             e.Tick();
 
         foreach (Entity e in killlist) {
-            e.Dispose();
             entities.Remove(e);
         }
         killlist.Clear();
@@ -185,8 +204,9 @@ class Engine : Game {
             for (int x = 0; x < xl; x++) {
                 int t = lay[x + xs, y + ys];
 
-                if (t != 0 || !transparent)
-                    graph.Blit(tileset[t], curx, cury, transparent);
+                if (t != 0 || !transparent) {
+                    tileset.Draw(curx, cury, t);
+                }
                 curx += tileset.Width;
             }
             cury += tileset.Height;
@@ -210,15 +230,16 @@ class Engine : Game {
     public void Render() {
         graph.Clear();
 
-        if (cameratarget != null) {
+        if (cameraTarget != null) {
             // going through the accessors so that the range checking code is called
-            XWin = cameratarget.X - graph.XRes / 2;
-            YWin = cameratarget.Y - graph.YRes / 2;
+            XWin = cameraTarget.X - graph.XRes / 2;
+            YWin = cameraTarget.Y - graph.YRes / 2;
         }
 
         int n = 0;
         foreach (Import.Map.Layer l in map.Layers) {
-            RenderLayer(l, n++ != 0);
+            RenderLayer(l, n != 0);
+            n++;
         }
         RenderEntities();
     }
@@ -304,8 +325,7 @@ class Engine : Game {
         foreach (Entity ent2 in entities) {
             if (ent == ent2) continue;
 
-            if (ent.Y + ent.Height > ent2.Y && ent.Y < ent2.Y + ent2.Height) //inside y coordinates
- 			{
+            if (ent.Y + ent.Height > ent2.Y && ent.Y < ent2.Y + ent2.Height) {
                 return ent2;
             }
 
@@ -317,8 +337,7 @@ class Engine : Game {
         foreach (Entity ent2 in entities) {
             if (ent == ent2) continue;
 
-            if (ent.X + ent.Width > ent2.X && ent.X < ent2.X + ent2.Width) //inside x coordinates
- 			{
+            if (ent.X + ent.Width > ent2.X && ent.X < ent2.X + ent2.Width) {
                 return ent2;
             }
 
@@ -343,8 +362,9 @@ class Engine : Game {
 
     //------------------------ Resource management ----------------------
 
-    public SpriteController sprites;	// initted in constructor
-    public TileSetController tilesets;	// ditto
-    //public SoundController sounds=new SoundController();
-    public MapController maps = new MapController();
+    public BitmapSprite TabbySprite;
+    public BitmapSprite RipperSprite;
+    public BitmapSprite DoorSprite;
+    public BitmapSprite BoomSprite;
+    public BitmapSprite BulletSprite;
 }

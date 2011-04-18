@@ -27,6 +27,8 @@ namespace Entities {
 
     sealed class Player : Entity {
         // --------------- constants ------------
+        const int key_C = 0;
+        const int key_SPACE = 1;
 
         const float groundfriction = 0.16f;
         const float airfriction = 0.01f;
@@ -59,8 +61,7 @@ namespace Entities {
         // --------------- code --------------
 
         public Player(Engine e)
-            : base(e, (Sprites.ISprite)e.sprites.Load("tabby.txt"))//e.LoadSpriteImage("tabby.txt"))
-        {
+            : base(e, e.TabbySprite) {
             input = engine.input.Keyboard;
 
             width = 12;
@@ -257,8 +258,7 @@ namespace Entities {
 
             vy = 0;
 
-            if (input.Axis(0) == 0) //aim up
-			{
+            if (input.Axis(0) == 0) {
                 SetWalkFireAngleUpState();
                 if (input.Button(key_SPACE)) {
                     if (direction == Dir.left) {
@@ -268,8 +268,7 @@ namespace Entities {
                     }
                 }
             }
-            if (input.Axis(0) == 255) //shoot down
-			{
+            if (input.Axis(0) == 255) {
                 SetWalkFireAngleDownState();
                 if (input.Button(key_SPACE)) {
                     if (direction == Dir.left) {
@@ -280,8 +279,7 @@ namespace Entities {
                     }
                 }
             }
-            if (input.Button(key_SPACE) && input.Axis(0) != 255 && input.Axis(0) != 0) //not pressing up/down
-			{
+            if (input.Button(key_SPACE) && input.Axis(0) != 255 && input.Axis(0) != 0) {
                 Fire(direction);
                 SetWalkFireState();
             }
@@ -291,7 +289,7 @@ namespace Entities {
                 vx -= groundaccel;
                 if (direction != Dir.left) {
                     direction = Dir.left;
-                    anim.Set(AnimState.playerwalk[(int)Dir.left]);//8,13,10,true);
+                    anim.Set(AnimState.playerwalk[(int)Dir.left]);
                 }
             }
             if (input.Axis(1) == 255) // right
@@ -299,7 +297,7 @@ namespace Entities {
                 vx += groundaccel;
                 if (direction != Dir.right) {
                     direction = Dir.right;
-                    anim.Set(AnimState.playerwalk[(int)Dir.right]);//16,21,10,true);
+                    anim.Set(AnimState.playerwalk[(int)Dir.right]);
                 }
             }
 
@@ -308,8 +306,7 @@ namespace Entities {
                 return;
             }
 
-            if (!touchingceiling && input.Button(key_C))	// jump
-			{
+            if (!touchingceiling && input.Button(key_C)) {
                 SetJumpState();
             }
 
@@ -327,17 +324,17 @@ namespace Entities {
 
             if (input.Button(key_SPACE)) {
 
-                if (input.Axis(0) == 0) //pointing up
-				{
-                    if (input.Axis(1) == 0) //upleft
-					{
+                if (input.Axis(0) == 0) {
+                    //pointing up
+                    if (input.Axis(1) == 0) {
+                        //upleft
                         SetFallFireState(Dir.up_left);
                     }
-                    if (input.Axis(1) == 255) //upright
-					{
+                    if (input.Axis(1) == 255) {
+                        //upright
                         SetFallFireState(Dir.up_right);
-                    } else //straight up
-					{
+                    } else {
+                        //straight up
                         SetFallFireState(Dir.up);
                     }
                 }
@@ -372,46 +369,50 @@ namespace Entities {
 
             vx = Vector.Decrease(vx, airfriction);
 
-            if (input.Axis(1) == 0)	// left
+            if (input.Axis(1) == 0) {
+                // left
                 vx -= airaccel;
-            if (input.Axis(1) == 255)	// right
+            }
+            if (input.Axis(1) == 255) {
+                // right
                 vx += airaccel;
+            }
         }
 
         public void Fall() {
             if (input.Button(key_SPACE)) {
-                if (input.Axis(0) == 0) //pointing up
-				{
-                    if (input.Axis(1) == 0) //upleft
-					{
+                if (input.Axis(0) == 0) {
+                    //pointing up
+                    if (input.Axis(1) == 0) {
+                        //upleft
                         SetFallFireState(Dir.up_left);
                     }
-                    if (input.Axis(1) == 255) //upright
-					{
+                    if (input.Axis(1) == 255) {
+                        //upright
                         SetFallFireState(Dir.up_right);
                     }
-                    if (input.Axis(1) != 255 && input.Axis(1) != 0) //straight up
-					{
+                    if (input.Axis(1) != 255 && input.Axis(1) != 0) {
+                        //straight up
                         SetFallFireState(Dir.up);
                     }
                 }
-                if (input.Axis(0) == 255) //pointing down
-				{
-                    if (input.Axis(1) == 0) //downleft
-					{
+                if (input.Axis(0) == 255) {
+                    //pointing down
+                    if (input.Axis(1) == 0) {
+                        //downleft
                         SetFallFireState(Dir.down_left);
                     }
-                    if (input.Axis(1) == 255) //downright
-					{
+                    if (input.Axis(1) == 255) {
+                        //downright
                         SetFallFireState(Dir.down_right);
                     }
-                    if (input.Axis(1) != 255 && input.Axis(1) != 0) //straight down
-					{
+                    if (input.Axis(1) != 255 && input.Axis(1) != 0) {
+                        //straight down
                         SetFallFireState(Dir.down);
                     }
                 }
-                if (input.Axis(0) != 255 && input.Axis(0) != 0) //not pressing up/down
-				{
+                if (input.Axis(0) != 255 && input.Axis(0) != 0) {
+                    //not pressing up/down
                     SetFallFireState(direction);
                 }
             }
@@ -434,8 +435,8 @@ namespace Entities {
 
             vx = Vector.Decrease(vx, airfriction);
 
-            if (input.Axis(1) == 0)	// left
-			{
+            if (input.Axis(1) == 0) {
+                // left
                 vx -= airaccel;
 
                 if (direction != Dir.left) {
@@ -443,8 +444,8 @@ namespace Entities {
                     anim.Set(AnimState.playerfall[(int)Dir.left]);
                 }
             }
-            if (input.Axis(1) == 255)	// right
-			{
+            if (input.Axis(1) == 255) {
+                // right
                 vx += airaccel;
 
                 if (direction != Dir.right) {
@@ -503,91 +504,5 @@ namespace Entities {
                     hp = value;
             }
         }
-
-        const int key_ESC = 1;
-        const int key_1 = 2;
-        const int key_2 = 3;
-        const int key_3 = 4;
-        const int key_4 = 5;
-        const int key_5 = 6;
-        const int key_6 = 7;
-        const int key_7 = 8;
-        const int key_8 = 9;
-        const int key_9 = 10;
-        const int key_0 = 11;
-        const int key_PLUS = 12;
-        const int key_MINUS = 13;
-        const int key_BACKSPACE = 14;
-        const int key_TAB = 15;
-        const int key_ENTER = 28;
-        const int key_CTRL = 29;
-        const int key_LSHIFT = 42;
-        const int key_RSHIFT = 54;
-        const int key_STAR = 55;
-        const int key_ALT = 56;
-        const int key_SPACE = 57;
-        const int key_CAPSLOCK = 58;
-        const int key_NUMLOCK = 69;
-        const int key_SCROLL_LOCK = 70;
-        const int key_HOME = 71;
-        const int key_UP = 72;
-        const int key_PGUP = 73;
-        const int key_PADMINUS = 74;
-        const int key_LEFT = 75;
-        const int key_PAD5 = 76;
-        const int key_RIGHT = 77;
-        const int key_PADPLUS = 78;
-        const int key_END = 79;
-        const int key_DOWN = 80;
-        const int key_PGDN = 81;
-        const int key_INSERT = 82;
-        const int key_DELETE = 83;
-        const int key_MACRO = 111;
-        const int key_F1 = 59;
-        const int key_F2 = 60;
-        const int key_F3 = 61;
-        const int key_F4 = 62;
-        const int key_F5 = 63;
-        const int key_F6 = 64;
-        const int key_F7 = 65;
-        const int key_F8 = 66;
-        const int key_F9 = 67;
-        const int key_F10 = 68;
-        const int key_F11 = 87;
-        const int key_F12 = 88;
-        const int key_COMMA = 51;
-        const int key_PERIOD = 52;
-        const int key_BACKSLASH = 53;
-        const int key_SEMICOLON = 39;
-        const int key_QUOTE = 40;
-        const int key_LEFTBRACKET = 26;
-        const int key_RIGHTBRACKET = 27;
-        const int key_A = 30;
-        const int key_B = 48;
-        const int key_C = 46;
-        const int key_D = 32;
-        const int key_E = 18;
-        const int key_F = 33;
-        const int key_G = 34;
-        const int key_H = 35;
-        const int key_I = 23;
-        const int key_J = 36;
-        const int key_K = 37;
-        const int key_L = 38;
-        const int key_M = 50;
-        const int key_N = 49;
-        const int key_O = 24;
-        const int key_P = 25;
-        const int key_Q = 16;
-        const int key_R = 19;
-        const int key_S = 31;
-        const int key_T = 20;
-        const int key_U = 22;
-        const int key_V = 47;
-        const int key_W = 17;
-        const int key_X = 45;
-        const int key_Y = 21;
-        const int key_Z = 44;
     }
-
 }

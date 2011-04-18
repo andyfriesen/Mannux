@@ -8,7 +8,8 @@ namespace Entities.Enemies
 	class Ripper : Enemy
 	{	
 		const float speed=1.0f;
-		public Ripper(Engine e,int startx, int starty) : base(e, (Sprites.ISprite)e.sprites.Load("ripper.txt"))//e.LoadSpriteImage("ripper.txt"))
+		public Ripper(Engine e,int startx, int starty)
+            : base(e, e.RipperSprite)
 		{
 			x=startx;
 			y=starty;
