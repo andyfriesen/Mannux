@@ -1,6 +1,7 @@
 *.cachefile
 *.xnb
 *.pdb
+*.suo
 Mannux/Content/obj
 ContentPipeline.xml
 Mannux/bin

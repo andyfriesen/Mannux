@@ -125,21 +125,15 @@
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Import\Geo\Line.cs" />
     <Compile Include="Import\Geo\Point.cs" />
-    <Compile Include="Import\ImageSprite.cs" />
-    <Compile Include="Import\ImageTileSet.cs" />
     <Compile Include="Import\MannuxMap.cs" />
     <Compile Include="Import\Map.cs" />
     <Compile Include="Import\MapEnt.cs" />
     <Compile Include="Import\PointCollection.cs" />
-    <Compile Include="Import\Sprite.cs" />
     <Compile Include="Import\TileSet.cs" />
     <Compile Include="Import\v2Map.cs" />
     <Compile Include="Import\v2rle.cs" />
-    <Compile Include="Import\v2Sprite.cs" />
-    <Compile Include="Import\v2TileSet.cs" />
     <Compile Include="Import\VectorIndexBuffer.cs" />
     <Compile Include="Import\VectorObstructionMap.cs" />
-    <Compile Include="Import\VergePal.cs" />
     <Compile Include="Cataract\OpenGLFont.cs" />
     <Compile Include="Cataract\XNAGraph.cs">
     </Compile>

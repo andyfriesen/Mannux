@@ -38,7 +38,6 @@ class Engine : Game {
     private ArrayList killlist = new ArrayList();			// entities to be removed
     private ArrayList addlist = new ArrayList();			// entities to be added
 
-    bool killflag = false;
     int xwin = 0;
     int ywin = 0;
 
