@@ -75,54 +75,7 @@ class Engine : Game {
         //editor = new Editor.Editor(this);
     }
 
-    /* 
-     * This is a bit of a hack.
-     * When the user closes the window, we pass it up, but set the killflag so that the engine knows to
-     * abort when it can.
-     */
-    void OnClose(object o, CancelEventArgs e) {
-        e.Cancel = true;
-
-        killflag = true;
-    }
-
     // -------------- Core engine logic --------------------
-
-    public void Execute() {
-        int frames = 0, fps = 0, timedelta = 0;
-
-        //Init();
-
-        int t = time;
-        while (!killflag) {
-            while (time > t) {
-                t++;
-                timedelta++;
-                input.Keyboard.Poll();
-
-                //-- temp hack
-                if (input.Keyboard.Button(1)) {
-                    //editor.Execute();
-                    t = time;					// so the engine doesn't think it has to catch up.
-                }
-                //--
-
-                Application.DoEvents();
-
-                ProcessEntities();
-            }
-
-            frames++;
-            Render();
-
-            if (timedelta >= 100) {
-                fps = frames;
-                frames = 0;
-                timedelta = 0;
-                //graph.Text = String.Format("Mannux - {0}fps", fps);
-            }
-        }
-    }
 
     protected override void Update(GameTime gameTime) {
         base.Update(gameTime);
