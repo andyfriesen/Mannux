@@ -14,24 +14,24 @@ namespace Import {
             this.AddRange(value);
         }
 
-        public PointCollection(Point[] value) {
+        public PointCollection(Vertex[] value) {
             this.AddRange(value);
         }
 
-        public Point this[int index] {
+        public Vertex this[int index] {
             get {
-                return ((Point)(List[index]));
+                return ((Vertex)(List[index]));
             }
             set {
                 List[index] = value;
             }
         }
 
-        public int Add(Point value) {
+        public int Add(Vertex value) {
             return List.Add(value);
         }
 
-        public void AddRange(Point[] value) {
+        public void AddRange(Vertex[] value) {
             for (int i = 0; (i < value.Length); i = (i + 1)) {
                 this.Add(value[i]);
             }
@@ -43,19 +43,19 @@ namespace Import {
             }
         }
 
-        public bool Contains(Point value) {
+        public bool Contains(Vertex value) {
             return List.Contains(value);
         }
 
-        public void CopyTo(Point[] array, int index) {
+        public void CopyTo(Vertex[] array, int index) {
             List.CopyTo(array, index);
         }
 
-        public int IndexOf(Point value) {
+        public int IndexOf(Vertex value) {
             return List.IndexOf(value);
         }
 
-        public void Insert(int index, Point value) {
+        public void Insert(int index, Vertex value) {
             List.Insert(index, value);
         }
 
@@ -63,7 +63,7 @@ namespace Import {
             return new PointEnumerator(this);
         }
 
-        public void Remove(Point value) {
+        public void Remove(Vertex value) {
             List.Remove(value);
         }
 
@@ -78,9 +78,9 @@ namespace Import {
                 this.baseEnumerator = temp.GetEnumerator();
             }
 
-            public Point Current {
+            public Vertex Current {
                 get {
-                    return ((Point)(baseEnumerator.Current));
+                    return ((Vertex)(baseEnumerator.Current));
                 }
             }
 

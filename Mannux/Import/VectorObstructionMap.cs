@@ -22,13 +22,13 @@ namespace Import {
 
             int pos = 0;
             foreach (int[] i in b.Lines) {
-                lines[pos++] = new Line((Point)b.Points[i[0]], (Point)b.Points[i[1]]);
+                lines[pos++] = new Line((Vertex)b.Points[i[0]], (Vertex)b.Points[i[1]]);
             }
         }
 
         public Line Test(int x, int y, int x2, int y2) {
             System.Drawing.Rectangle r = new System.Drawing.Rectangle(x, y, x2 - x, y2 - y);
-            Point p = new Point(0, 0);
+            Vertex p = new Vertex(0, 0);
 
             foreach (Line l in lines) {
                 if (l.Touches(r, ref p))

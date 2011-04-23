@@ -17,8 +17,8 @@ namespace Editor {
 
         Editor editor;
         Engine engine;
-        Point p1 = new Point();
-        Point p2 = new Point();
+        Vertex p1 = new Vertex();
+        Vertex p2 = new Vertex();
         int[,] curselection;
         EditState state = EditState.DoingNothing;
 

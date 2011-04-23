@@ -125,7 +125,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Import\Geo\Line.cs" />
-    <Compile Include="Import\Geo\Point.cs" />
+    <Compile Include="Import\Geo\Vertex.cs" />
     <Compile Include="Import\MannuxMap.cs" />
     <Compile Include="Import\Map.cs" />
     <Compile Include="Import\MapEnt.cs" />

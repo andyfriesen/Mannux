@@ -18,7 +18,7 @@ namespace Editor {
             engine = e.engine;
         }
 
-        int dist(ref Import.Geo.Point p, int x, int y) {
+        int dist(ref Vertex p, int x, int y) {
             int dx = p.X - x;
             int dy = p.Y - y;
 
@@ -35,7 +35,7 @@ namespace Editor {
             int idx = 0;
             int best = 99999;
             for (int i = 0; i < engine.map.Obs.Points.Count; i++) {
-                var p = (Import.Geo.Point)engine.map.Obs.Points[i];
+                var p = (Vertex)engine.map.Obs.Points[i];
                 var d = dist(ref p, x, y);
 
                 // we skip the current one, so that you can get the next closest one.
@@ -71,7 +71,7 @@ namespace Editor {
             rightdown = true;
 
             if (!snap) {
-                engine.map.Obs.Points.Add(new Import.Geo.Point(x, y));
+                engine.map.Obs.Points.Add(new Vertex(x, y));
             } else {
                 //snap to corners of tiles
                 if (x % 16 <= 8) while (x % 16 != 0) x--;
@@ -80,7 +80,7 @@ namespace Editor {
                 else while (y % 16 != 0) y++;
 
 
-                engine.map.Obs.Points.Add(new Import.Geo.Point(x, y));
+                engine.map.Obs.Points.Add(new Vertex(x, y));
             }
         }
 

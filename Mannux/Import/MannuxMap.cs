@@ -80,7 +80,7 @@ namespace Import {
                 int x = file.ReadInt32();
                 int y = file.ReadInt32();
 
-                map.Obs.Points.Add(new Point(x, y));
+                map.Obs.Points.Add(new Vertex(x, y));
             }
 
             int numsegments = file.ReadInt32();
@@ -142,7 +142,7 @@ namespace Import {
             }
 
             file.Write(map.Obs.Points.Count);
-            foreach (Point p in map.Obs.Points) {
+            foreach (Vertex p in map.Obs.Points) {
                 file.Write(p.X);
                 file.Write(p.Y);
             }

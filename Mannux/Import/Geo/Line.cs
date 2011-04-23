@@ -3,12 +3,12 @@ using System.Drawing;
 namespace Import.Geo {
 
     public class Line {
-        Point a;
-        Point b;
+        Vertex a;
+        Vertex b;
         float slope;
         float yint;
 
-        public Line(Point A, Point B) {
+        public Line(Vertex A, Vertex B) {
             a = A;
             b = B;
 
@@ -20,7 +20,7 @@ namespace Import.Geo {
         }
 
         public Line(int x1, int y1, int x2, int y2)
-            : this(new Point(x1, y1), new Point(x2, y2)) { }
+            : this(new Vertex(x1, y1), new Vertex(x2, y2)) { }
 
         public float Slope { get { return slope; } }
         public float YIntercept { get { return yint; } }
@@ -36,7 +36,7 @@ namespace Import.Geo {
             return (y - YIntercept) / Slope;
         }
 
-        public bool Intersects(Line l, ref Point intercept) {
+        public bool Intersects(Line l, ref Vertex intercept) {
             float this_m = Slope;
             float l_m = l.Slope;
 
@@ -82,7 +82,7 @@ namespace Import.Geo {
         }
 
         // UGLY
-        bool Touches(Line l, ref Point intercept) {
+        bool Touches(Line l, ref Vertex intercept) {
             // If the bounding boxes that the lines live in don't touch, then we don't need to do any more work.
             if (a.X < l.a.X && a.X < l.b.X && b.X < l.a.X && b.X < l.b.X)
                 return false;
@@ -114,7 +114,7 @@ namespace Import.Geo {
             return true;
         }
 
-        public bool Touches(Rectangle r, ref Point intercept) {
+        public bool Touches(Rectangle r, ref Vertex intercept) {
             // bounding box type things
             if (a.X < r.Left && b.X < r.Left) return false;
             if (a.X > r.Right && b.X > r.Right) return false;
@@ -125,33 +125,33 @@ namespace Import.Geo {
 
             x = (int)atY(r.Top);
             if (x >= r.Left && x <= r.Right) {
-                intercept = new Point(x, r.Top);
+                intercept = new Vertex(x, r.Top);
                 return true;
             }
 
             x = (int)atY(r.Bottom);
             if (x >= r.Left && x <= r.Right) {
-                intercept = new Point(x, r.Bottom);
+                intercept = new Vertex(x, r.Bottom);
                 return true;
             }
 
             y = (int)atX(r.Left);
             if (y >= r.Top && y <= r.Bottom) {
-                intercept = new Point(r.Left, y);
+                intercept = new Vertex(r.Left, y);
                 return true;
             }
 
             y = (int)atX(r.Right);
             if (y >= r.Top && y <= r.Bottom) {
-                intercept = new Point(r.Right, y);
+                intercept = new Vertex(r.Right, y);
                 return true;
             }
 
             return false;
         }
 
-        public Point A { get { return a; } }
-        public Point B { get { return b; } }
+        public Vertex A { get { return a; } }
+        public Vertex B { get { return b; } }
 
         public override string ToString() {
             return System.String.Format("({0},{1})-({2},{3})", a.X, a.Y, b.X, b.Y);
