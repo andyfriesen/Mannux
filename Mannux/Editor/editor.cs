@@ -7,11 +7,11 @@ using Import.Geo;
 
 using System;
 using System.IO;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using Microsoft.Xna.Framework; // HACK
 using Microsoft.Xna.Framework.Input; // HACK
 
 namespace Editor {
@@ -44,7 +44,7 @@ namespace Editor {
             form = e.graph;
 
             tileset = new Tileset(
-                new Bitmap("mantiles.png"),
+                new System.Drawing.Bitmap("mantiles.png"),
                 16, 16, 42 * 18
             );
 
@@ -90,6 +90,11 @@ namespace Editor {
             autoselectionthing = new AutoSelectionThing(this);
 
             mapinfoview.Menu = menu;
+
+            var m = engine.input.Mouse;
+            m.MouseDown += MouseClick;
+            m.MouseUp += MouseUp;
+            m.Moved += (p, b) => MouseDown(p);
 
             // TEMP
 
@@ -172,7 +177,7 @@ namespace Editor {
         }
 
         private void UpdateMouse() {
-            var ms = Mouse.GetState();
+            engine.input.Mouse.SendEvents();
         }
 
         void Render() {
@@ -187,15 +192,15 @@ namespace Editor {
             state.RenderHUD();
         }
 
-        void MouseClick(Microsoft.Xna.Framework.Point pos) {
+        void MouseClick(Point pos) {
             state.MouseClick(pos);
         }
 
-        void MouseDown(Microsoft.Xna.Framework.Point pos) {
+        void MouseDown(Point pos) {
             state.MouseDown(pos);
         }
 
-        void MouseUp(Microsoft.Xna.Framework.Point pos) {
+        void MouseUp(Point pos) {
             state.MouseUp(pos);
         }
 

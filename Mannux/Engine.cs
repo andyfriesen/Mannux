@@ -48,6 +48,8 @@ class Engine : Game {
 
     protected override void Initialize() {
         base.Initialize();
+        IsMouseVisible = true;
+
     }
 
     protected override void LoadContent() {
@@ -93,7 +95,6 @@ class Engine : Game {
     }
 
     private void StartEditor() {
-        IsMouseVisible = true;
         Window.Title = "Mannux - Editor";
         editor.Execute();
     }

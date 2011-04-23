@@ -13,8 +13,15 @@ namespace Input {
             }
         }
 
+        public MouseDevice Mouse {
+            get {
+                return md;
+            }
+        }
+
         public void Poll() {
             kd.Poll();
+            md.Poll();
         }
     }
 }
