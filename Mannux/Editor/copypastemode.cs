@@ -27,7 +27,7 @@ namespace Editor {
             engine = e.engine;
         }
 
-        public void MouseDown(MouseEventArgs e) {
+        public void MouseDown(Microsoft.Xna.Framework.Point e) {
             int x = e.X;
             int y = e.Y;
 
@@ -51,7 +51,7 @@ namespace Editor {
             }
         }
 
-        public void MouseUp(MouseEventArgs e) {
+        public void MouseUp(Microsoft.Xna.Framework.Point e) {
             switch (state) {
                 case EditState.Copying: {
                     int x1 = p1.X;
@@ -86,7 +86,7 @@ namespace Editor {
             y = (y + engine.YWin) / engine.tileset.Height;
         }
 
-        public void MouseClick(MouseEventArgs e) {
+        public void MouseClick(Microsoft.Xna.Framework.Point e) {
             if ((Control.ModifierKeys & Keys.Shift) != 0) {
                 int x = e.X;
                 int y = e.Y;
@@ -95,7 +95,9 @@ namespace Editor {
                 p1.X = x;
                 p1.Y = y;
 
+#if false
                 if ((e.Button & MouseButtons.Left) != 0) {
+#endif
                     if (state == EditState.Pasting) {
                         // left click while pasting to cancel
                         state = EditState.DoingNothing;
@@ -104,16 +106,21 @@ namespace Editor {
 
                     state = EditState.Copying;
                     p2.X = x; p2.Y = y;
+#if false
                 } else if ((e.Button & MouseButtons.Right) != 0 && curselection != null) {
                     state = EditState.Pasting;
                     p2.X = x + curselection.GetLength(0);
                     p2.Y = y + curselection.GetLength(1);
                 }
+#endif
             }
         }
 
         public void KeyPress(KeyEventArgs e) {
 
+        }
+
+        public void MouseWheel(Microsoft.Xna.Framework.Point p, int delta) {
         }
 
         public void RenderHUD() {

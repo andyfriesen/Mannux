@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using Import.Geo;
+using Microsoft.Xna.Framework;
 
 namespace Editor {
     class ObstructionMode : IEditorState {
@@ -17,14 +18,14 @@ namespace Editor {
             engine = e.engine;
         }
 
-        int dist(ref Point p, int x, int y) {
+        int dist(ref Import.Geo.Point p, int x, int y) {
             int dx = p.X - x;
             int dy = p.Y - y;
 
             return (int)Math.Sqrt(dx * dx + dy * dy);
         }
 
-        void LeftClick(int x, int y, MouseEventArgs e) {
+        void LeftClick(int x, int y) {
             if (leftdown)
                 return;
 
@@ -34,8 +35,8 @@ namespace Editor {
             int idx = 0;
             int best = 99999;
             for (int i = 0; i < engine.map.Obs.Points.Count; i++) {
-                Point p = (Point)engine.map.Obs.Points[i];
-                int d = dist(ref p, x, y);
+                var p = (Import.Geo.Point)engine.map.Obs.Points[i];
+                var d = dist(ref p, x, y);
 
                 // we skip the current one, so that you can get the next closest one.
                 // Makes handling dots that wind up close to each other easier.
@@ -70,7 +71,7 @@ namespace Editor {
             rightdown = true;
 
             if (!snap) {
-                engine.map.Obs.Points.Add(new Point(x, y));
+                engine.map.Obs.Points.Add(new Import.Geo.Point(x, y));
             } else {
                 //snap to corners of tiles
                 if (x % 16 <= 8) while (x % 16 != 0) x--;
@@ -79,28 +80,36 @@ namespace Editor {
                 else while (y % 16 != 0) y++;
 
 
-                engine.map.Obs.Points.Add(new Point(x, y));
+                engine.map.Obs.Points.Add(new Import.Geo.Point(x, y));
             }
         }
 
-        public void MouseDown(MouseEventArgs e) {
+        public void MouseDown(Microsoft.Xna.Framework.Point e) {
         }
 
-        public void MouseUp(MouseEventArgs e) {
+        public void MouseUp(Microsoft.Xna.Framework.Point e) {
+#if true
+            leftdown = false;
+#else
             switch (e.Button) {
                 case MouseButtons.Left: leftdown = false; break;
                 case MouseButtons.Right: rightdown = false; break;
             }
+#endif
         }
 
-        public void MouseClick(MouseEventArgs e) {
+        public void MouseClick(Microsoft.Xna.Framework.Point e) {
             int x = e.X + engine.XWin;
             int y = e.Y + engine.YWin;
 
+#if true
+            LeftClick(x, y);
+#else
             if (e.Button == MouseButtons.Left)
                 LeftClick(x, y, e);
             else if (e.Button == MouseButtons.Right)
                 RightClick(x, y, e);
+#endif
         }
 
         public unsafe void KeyPress(KeyEventArgs e) {
@@ -115,6 +124,9 @@ namespace Editor {
                 case Keys.NumPad6: engine.map.Obs.Points[curpoint].X += size; break;
                 case Keys.Delete: engine.map.Obs.RemovePoint(curpoint); curpoint = 0; break;
             }
+        }
+
+        public void MouseWheel(Microsoft.Xna.Framework.Point p, int delta) {
         }
 
         public void RenderHUD() {

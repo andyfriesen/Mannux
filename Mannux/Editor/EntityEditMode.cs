@@ -1,10 +1,11 @@
 using System.Windows.Forms;
 using Import;
+using Microsoft.Xna.Framework;
 
 namespace Editor {
     class EntityEditMode : IEditorState {
         Editor editor;
-        object engine;
+        Engine engine;
 
         MapEnt curent;
 
@@ -30,14 +31,14 @@ namespace Editor {
             return null;
         }
 
-        public void MouseDown(MouseEventArgs e) {
+        public void MouseDown(Point e) {
         }
 
-        public void MouseUp(MouseEventArgs e) {
+        public void MouseUp(Point e) {
 
         }
 
-        public void MouseClick(MouseEventArgs e) {
+        public void MouseClick(Point e) {
             int x = e.X + engine.XWin;
             int y = e.Y + engine.YWin;
 
@@ -111,6 +112,9 @@ namespace Editor {
 
             Gl.glTranslatef(engine.XWin, engine.YWin, 0);
 #endif
+        }
+
+        public void MouseWheel(Point p, int delta) {
         }
     }
 }

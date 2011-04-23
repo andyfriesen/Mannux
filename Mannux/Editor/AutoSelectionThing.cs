@@ -69,8 +69,8 @@ namespace Editor {
             int h = Convert.ToInt32(height.Text);
             int s = Convert.ToInt32(span.Text);
 
-            if (t + w * h >= editor.engine.tileset.NumTiles)
-                return;
+            //if (t + w * h >= editor.engine.tileset.NumTiles)
+            //    return;
 
             int[,] b = new int[w, h];
 

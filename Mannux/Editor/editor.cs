@@ -7,16 +7,17 @@ using Import.Geo;
 
 using System;
 using System.IO;
-//using System.Drawing;
+using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using Microsoft.Xna.Framework.Input; // HACK
+
 namespace Editor {
     class Editor {
         public Engine engine;
-        OpenGLForm form;
-        bool killflag;
+        XNAGraph form;
 
         // UI elements
         MainMenu menu;
@@ -26,15 +27,26 @@ namespace Editor {
         public MapEntPropertiesView mapentpropertiesview;
         AutoSelectionThing autoselectionthing;
 
+        public readonly Tileset tileset;
+
         public IEditorState state;
         public TileSetMode tilesetmode;
         public CopyPasteMode copypastemode;
         public ObstructionMode obstructionmode;
         public EntityEditMode entityeditmode;
 
+        public event Action OnExit;
+
+        public bool Running;
+
         public Editor(Engine e) {
             engine = e;
             form = e.graph;
+
+            tileset = new Tileset(
+                new Bitmap("mantiles.png"),
+                16, 16, 42 * 18
+            );
 
             tilesetmode = new TileSetMode(this);
             copypastemode = new CopyPasteMode(this);
@@ -49,8 +61,6 @@ namespace Editor {
             statbar.Panels[1].AutoSize = StatusBarPanelAutoSize.Contents;
             statbar.ShowPanels = true;
 
-            // muahahahah
-
             menu = new MainMenu(new MenuItem[] {
                 new MenuItem("&File", new MenuItem[] {
                     new MenuItem("&New",               new EventHandler(NewMap   ), Shortcut.CtrlN),
@@ -58,8 +68,6 @@ namespace Editor {
                     new MenuItem("-"),
                     new MenuItem("&Save",              new EventHandler(SaveMap  ), Shortcut.CtrlS),
                     new MenuItem("Save &As...",        new EventHandler(SaveMapAs), Shortcut.F12  ),
-                    new MenuItem("-"),
-                    new MenuItem("E&xit",              new EventHandler(Exit     ))
                 }),
                 new MenuItem("&Edit", new MenuItem[] {
                     new MenuItem("&Map Properties...", new EventHandler(ShowMapProperties   )),
@@ -75,53 +83,63 @@ namespace Editor {
                 })
             });
 
-            tilesetpreview = new TileSetPreview(engine.ts);
+            tilesetpreview = new TileSetPreview(tileset);
             tilesetpreview.ChangeTile += new ChangeTileHandler(OnTileChange);
             mapinfoview = new MapInfoView(this);
             mapentpropertiesview = new MapEntPropertiesView(this);
             autoselectionthing = new AutoSelectionThing(this);
 
-            form.AddOwnedForm(mapinfoview);
-            form.AddOwnedForm(mapentpropertiesview);
-            form.AddOwnedForm(tilesetpreview);
-            form.AddOwnedForm(autoselectionthing);
+            mapinfoview.Menu = menu;
+
+            // TEMP
+
+            //form.AddOwnedForm(mapinfoview);
+            //form.AddOwnedForm(mapentpropertiesview);
+            //form.AddOwnedForm(tilesetpreview);
+            //form.AddOwnedForm(autoselectionthing);
+
+            Running = false;
         }
 
         public void Init() {
             // Assigns events and such
-            form.KeyDown += new KeyEventHandler(this.KeyPress);
-            form.MouseDown += new MouseEventHandler(this.MouseClick);
-            form.MouseWheel += new MouseEventHandler(this.MouseClick);
-            form.MouseMove += new MouseEventHandler(this.MouseDown);
-            form.MouseUp += new MouseEventHandler(this.MouseUp);
-            form.Closing += new CancelEventHandler(this.OnClosing);
-
-            killflag = false;
+            //form.KeyDown += new KeyEventHandler(this.KeyPress);
+            //form.MouseDown += new MouseEventHandler(this.MouseClick);
+            //form.MouseWheel += new MouseEventHandler(this.MouseClick);
+            //form.MouseMove += new MouseEventHandler(this.MouseDown);
+            //form.MouseUp += new MouseEventHandler(this.MouseUp);
+            //form.Closing += new CancelEventHandler(this.OnClosing);
 
             //form.Controls.Add(statbar);
-            form.Menu = menu;
+            //form.Menu = menu;
             // make the window bigger; if we don't, GL will just scale things.  Blech.
-            form.ClientSize = new System.Drawing.Size(
-                form.XRes, form.YRes// + statbar.Height
-            );
+            //form.ClientSize = new System.Drawing.Size(
+            //    form.XRes, form.YRes// + statbar.Height
+            //);
+
+            tilesetpreview.Show();
+            mapinfoview.Show();
+            mapentpropertiesview.Show();
 
             state = tilesetmode;
 
-            form.Text = "Mannux -- Editor";
+            //form.Text = "Mannux -- Editor";
         }
 
         public void Shutdown() {
-            // removes added events so that the engine can resume as if nothing had happened
-            form.KeyDown -= new KeyEventHandler(this.KeyPress);
-            form.MouseDown -= new MouseEventHandler(this.MouseClick);
-            form.MouseWheel -= new MouseEventHandler(this.MouseClick);
-            form.MouseMove -= new MouseEventHandler(this.MouseDown);
-            form.MouseUp -= new MouseEventHandler(this.MouseUp);
-            form.Closing -= new CancelEventHandler(this.OnClosing);
+            Running = false;
 
-            form.Controls.Remove(statbar);
-            form.Menu = null;
-            form.ClientSize = new System.Drawing.Size(form.XRes, form.YRes);
+            // removes added events so that the engine can resume as if nothing had happened
+            //form.KeyDown -= new KeyEventHandler(this.KeyPress);
+            //form.MouseDown -= new MouseEventHandler(this.MouseClick);
+            //form.MouseWheel -= new MouseEventHandler(this.MouseClick);
+            //form.MouseMove -= new MouseEventHandler(this.MouseDown);
+            //form.MouseUp -= new MouseEventHandler(this.MouseUp);
+            //form.Closing -= new CancelEventHandler(this.OnClosing);
+
+            //form.Controls.Remove(statbar);
+            //form.Menu = null;
+            //form.ClientSize = new System.Drawing.Size(form.XRes, form.YRes);
 
             // update the map obstructions
             engine.obs.Generate(engine.map.Obs);
@@ -129,26 +147,32 @@ namespace Editor {
             mapinfoview.Hide();
             mapentpropertiesview.Hide();
             tilesetpreview.Hide();
+
+            if (OnExit != null) {
+                OnExit();
+            }
         }
 
         public void Execute() {
+            Running = true;
             Init();
+        }
 
-            while (!killflag) {
-                Application.DoEvents();
+        public void Update() {
+            if (engine.input.Keyboard.Axis(1) == 0) engine.XWin -= 2;
+            if (engine.input.Keyboard.Axis(1) == 255) engine.XWin += 2;
+            if (engine.input.Keyboard.Axis(0) == 0) engine.YWin -= 2;
+            if (engine.input.Keyboard.Axis(0) == 255) engine.YWin += 2;
 
-                engine.input.Keyboard.Poll();
-                if (engine.input.Keyboard.Axis(1) == 0) engine.XWin -= 2;
-                if (engine.input.Keyboard.Axis(1) == 255) engine.XWin += 2;
-                if (engine.input.Keyboard.Axis(0) == 0) engine.YWin -= 2;
-                if (engine.input.Keyboard.Axis(0) == 255) engine.YWin += 2;
+            UpdateMouse();
 
-                form.Clear();
-                Render();
-                form.ShowPage();
+            if (engine.input.Keyboard.Button(2)) {
+                Shutdown();
             }
+        }
 
-            Shutdown();
+        private void UpdateMouse() {
+            var ms = Mouse.GetState();
         }
 
         void Render() {
@@ -163,18 +187,16 @@ namespace Editor {
             state.RenderHUD();
         }
 
-        int x, y;
-        void MouseClick(object o, MouseEventArgs e) {
-            state.MouseClick(e);
+        void MouseClick(Microsoft.Xna.Framework.Point pos) {
+            state.MouseClick(pos);
         }
 
-        void MouseDown(object o, MouseEventArgs e) {
-            x = e.X; y = e.Y;
-            state.MouseDown(e);
+        void MouseDown(Microsoft.Xna.Framework.Point pos) {
+            state.MouseDown(pos);
         }
 
-        void MouseUp(object o, MouseEventArgs e) {
-            state.MouseUp(e);
+        void MouseUp(Microsoft.Xna.Framework.Point pos) {
+            state.MouseUp(pos);
         }
 
         void KeyPress(object o, KeyEventArgs e) {
@@ -182,7 +204,6 @@ namespace Editor {
         }
 
         public void OnClosing(object o, CancelEventArgs e) {
-            killflag = true;
             e.Cancel = true;
         }
 
@@ -257,10 +278,6 @@ namespace Editor {
             Directory.SetCurrentDirectory(s);
 
             engine.mapfilename = dlg.FileName;
-        }
-
-        public void Exit(object o, EventArgs e) {
-            killflag = true;
         }
 
         public void ShowTileSet(object o, EventArgs e) {

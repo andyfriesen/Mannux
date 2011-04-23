@@ -6,12 +6,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Input {
     class KeyboardDevice : IInputDevice {
+        private KeyboardState oldks;
         private KeyboardState ks;
 
         private float xAxis;
         private float yAxis;
 
         public void Poll() {
+            oldks = ks;
             ks = Keyboard.GetState();
 
             if (ks.IsKeyDown(Keys.Left)) xAxis = 0.0f;
@@ -32,12 +34,18 @@ namespace Input {
             }
         }
 
+        private bool IsPressed(Keys k) {
+            return oldks.IsKeyUp(k) && ks.IsKeyDown(k);
+        }
+
         public bool Button(int b) {
             switch (b) {
                 case 0:
                     return ks.IsKeyDown(Keys.Space);
                 case 1:
-                    return ks.IsKeyDown(Keys.C);
+                    return IsPressed(Keys.C);
+                case 2:
+                    return IsPressed(Keys.Escape);
                 default:
                     return false;
             }

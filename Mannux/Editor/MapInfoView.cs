@@ -5,7 +5,7 @@ using System.Drawing;
 namespace Editor {
     class MapInfoView : Form {
         Editor editor;
-        object engine;
+        Engine engine;
 
         // Controls
         ListBox curlay;

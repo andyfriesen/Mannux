@@ -31,7 +31,7 @@ class Engine : Game {
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
     public Timer time;
-    //public Editor.Editor editor;
+    public Editor.Editor editor;
     public VectorObstructionMap obs;
 
     public ArrayList entities = new ArrayList();			// entities currently on the map
@@ -66,12 +66,13 @@ class Engine : Game {
         player.X = player.Y = 32;	// arbitrary, if the map doesn't stipulate a starting point.
 
         map = v2Map.Load("map00.map");
-        MapSwitch("data/maps/test2.map");
+        MapSwitch("data/maps/test.map");
         obs = new VectorObstructionMap(map.Obs);
 
         time = new Timer(100);
 
-        //editor = new Editor.Editor(this);
+        editor = new Editor.Editor(this);
+        editor.OnExit += StopEditor;
     }
 
     // -------------- Core engine logic --------------------
@@ -79,7 +80,26 @@ class Engine : Game {
     protected override void Update(GameTime gameTime) {
         base.Update(gameTime);
         input.Poll();
-        ProcessEntities();
+
+        if (editor.Running) {
+            editor.Update();
+        } else {
+            if (input.Keyboard.Button(2)) {
+                editor.Execute();
+            }
+
+            ProcessEntities();
+        }
+    }
+
+    private void StartEditor() {
+        IsMouseVisible = true;
+        Window.Title = "Mannux - Editor";
+        editor.Execute();
+    }
+
+    private void StopEditor() {
+        Window.Title = "Mannux";
     }
 
     protected override void Draw(GameTime gameTime) {
@@ -90,16 +110,18 @@ class Engine : Game {
     }
 
     void ProcessEntities() {
-        foreach (Entity e in entities)
+        foreach (Entity e in entities) {
             e.Tick();
+        }
 
         foreach (Entity e in killlist) {
             entities.Remove(e);
         }
         killlist.Clear();
 
-        foreach (Entity e in addlist)
+        foreach (Entity e in addlist) {
             entities.Add(e);
+        }
         addlist.Clear();
     }
 

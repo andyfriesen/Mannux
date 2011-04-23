@@ -87,30 +87,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Editor\AutoSelectionThing.cs">
+    <Compile Include="Editor\AutoSelectionThing.cs">
       <SubType>Form</SubType>
-    </None>
-    <None Include="Editor\copypastemode.cs" />
-    <None Include="Editor\editor.cs" />
-    <None Include="Editor\EntityEditMode.cs" />
-    <None Include="Editor\IEditorState.cs" />
-    <None Include="Editor\MapEntPropertiesView.cs">
+    </Compile>
+    <Compile Include="Editor\copypastemode.cs" />
+    <Compile Include="Editor\Editor.cs" />
+    <Compile Include="Editor\EntityEditMode.cs" />
+    <Compile Include="Editor\IEditorState.cs" />
+    <Compile Include="Editor\MapEntPropertiesView.cs">
       <SubType>Form</SubType>
-    </None>
-    <None Include="Editor\MapInfoView.cs">
+    </Compile>
+    <Compile Include="Editor\MapInfoView.cs">
       <SubType>Form</SubType>
-    </None>
-    <None Include="Editor\NewMapDlg.cs">
+    </Compile>
+    <Compile Include="Editor\NewMapDlg.cs">
       <SubType>Form</SubType>
-    </None>
-    <None Include="Editor\obstructionmode.cs" />
-    <None Include="Editor\TileSetMode.cs" />
-    <None Include="Editor\TileSetPreview.cs">
+    </Compile>
+    <Compile Include="Editor\ObstructionMode.cs" />
+    <Compile Include="Editor\Tileset.cs" />
+    <Compile Include="Editor\TileSetMode.cs" />
+    <Compile Include="Editor\TileSetPreview.cs">
       <SubType>Form</SubType>
-    </None>
-    <None Include="Editor\Util.cs">
+    </Compile>
+    <Compile Include="Editor\Util.cs">
       <SubType>Component</SubType>
-    </None>
+    </Compile>
     <Compile Include="AnimState.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Engine.cs" />
@@ -129,7 +130,6 @@
     <Compile Include="Import\Map.cs" />
     <Compile Include="Import\MapEnt.cs" />
     <Compile Include="Import\PointCollection.cs" />
-    <Compile Include="Import\TileSet.cs" />
     <Compile Include="Import\v2Map.cs" />
     <Compile Include="Import\v2rle.cs" />
     <Compile Include="Import\VectorIndexBuffer.cs" />
@@ -140,6 +140,7 @@
     <Compile Include="Input\IInputDevice.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Input\KeyboardDevice.cs" />
+    <Compile Include="Input\MouseDevice.cs" />
     <Compile Include="Input\X360Gamepad.cs" />
     <Compile Include="IUpdatable.cs" />
     <Compile Include="MannuxControllers.cs" />

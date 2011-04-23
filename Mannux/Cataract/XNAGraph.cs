@@ -12,7 +12,7 @@ namespace Cataract {
         public XNAGraph(GraphicsDevice device, ContentManager contentManager) {
             this.device = device;
             this.contentManager = contentManager;
-            this.spriteBatch = new SpriteBatch(device);
+            spriteBatch = new SpriteBatch(device);
         }
 
         public void Begin() {

@@ -1,11 +1,11 @@
 using System;
 using System.Windows.Forms;
+using Microsoft.Xna.Framework;
 
 namespace Editor {
     class TileSetMode : IEditorState {
         Editor editor;
-        //Engine engine;
-        object engine;
+        Engine engine;
 
         // ooh evil.
         public int curtile = 0;
@@ -17,15 +17,23 @@ namespace Editor {
             engine = e.engine;
         }
 
-        public void MouseDown(MouseEventArgs e) {
+        public void MouseDown(Point e) {
             MouseClick(e);
         }
 
-        public void MouseUp(MouseEventArgs e) {
+        public void MouseUp(Point e) {
         }
 
-        public void MouseClick(MouseEventArgs e) {
-#if false
+        public void MouseWheel(Point p, int delta) {
+            curtile += delta / 120;	// don't ask why, e.delta is in 120s for some reason.
+
+            if (curtile < 0)
+                curtile += editor.tileset.NumTiles;
+            if (curtile >= editor.tileset.NumTiles)
+                curtile -= editor.tileset.NumTiles;
+        }
+
+        public void MouseClick(Point e) {
             int tilex = (e.X + engine.XWin) / engine.tileset.Width;
             int tiley = (e.Y + engine.YWin) / engine.tileset.Height;
 
@@ -35,28 +43,14 @@ namespace Editor {
             editor.statbar.Panels[0].Text = String.Format("Layer {0}", curlayer);
             editor.statbar.Panels[1].Text = String.Format("({0},{1})", tilex, tiley);
 
-            if (e.Delta != 0) {
-                curtile += e.Delta / 120;	// don't ask why, e.delta is in 120s for some reason.
-
-                if (curtile < 0)
-                    curtile += engine.tileset.NumTiles;
-                if (curtile >= engine.tileset.NumTiles)
-                    curtile -= engine.tileset.NumTiles;
-                return;
-            }
-
-
-            if (e.Button != MouseButtons.Left)
-                return;
-
             oldx = tilex;
             oldy = tiley;
 
-            if ((Control.ModifierKeys & Keys.Shift) != 0)
+            if ((Control.ModifierKeys & Keys.Shift) != 0) {
                 curtile = engine.map[curlayer][tilex, tiley];
-            else
+            } else {
                 engine.map[curlayer][tilex, tiley] = curtile;
-#endif
+            }
         }
 
         public void KeyPress(KeyEventArgs e) {
