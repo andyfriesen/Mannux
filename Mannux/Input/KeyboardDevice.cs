@@ -43,7 +43,7 @@ namespace Input {
                 case 0:
                     return ks.IsKeyDown(Keys.Space);
                 case 1:
-                    return IsPressed(Keys.C);
+                    return IsPressed(Keys.LeftControl);
                 case 2:
                     return IsPressed(Keys.Escape);
                 default:

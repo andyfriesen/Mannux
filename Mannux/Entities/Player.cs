@@ -30,16 +30,20 @@ namespace Entities {
         const int key_C = 0;
         const int key_SPACE = 1;
 
-        const float groundfriction = 0.16f;
-        const float airfriction = 0.01f;
+        const float groundfriction = 0.26f;
+        const float airfriction = 0.0166f;
 
-        const float groundaccel = 0.32f;
-        const float airaccel = 0.12f;
+        const float groundaccel = 0.53f;
+        const float airaccel = 0.2f;
 
-        const float maxxvelocity = 1.5f;
-        const float maxyvelocity = 50;
+        const float maxxvelocity = 2.5f;
+        const float maxyvelocity = 250.0f;
 
-        const int jumpheight = 50;
+        const float jumpvelocity = -3.33f;
+
+        // Frames between shots
+        const int fire_delay = 12;
+        const int jumpheight = 30;
 
         /*	const float groundfriction=0.08f;
             const float airfriction=0.08f;
@@ -319,7 +323,7 @@ namespace Entities {
         public void Jump() {
             if (!input.Button(key_C) || jumpcount == 0) {
                 jumpcount = 0;
-                vy = -2;
+                vy = jumpvelocity / 2;
                 SetFallState();
                 return;
             }
@@ -356,8 +360,7 @@ namespace Entities {
                 SetFallState();
             }
 
-            //y-=2;
-            vy = -2;
+            vy = jumpvelocity;
             jumpcount--;
 
             vx = Vector.Decrease(vx, airfriction);
@@ -476,7 +479,7 @@ namespace Entities {
             if (firedelay == 0) {
                 Bullet B = new Bullet(engine, bx, by, d);
                 engine.SpawnEntity(B);
-                firedelay = 20;
+                firedelay = fire_delay;
 
                 //engine.s_effect.Play();
 

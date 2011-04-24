@@ -4,6 +4,8 @@ using Entities.Enemies;
 
 namespace Entities {
     class Bullet : Entity {
+        const float velocity = 6.6f;
+
         public Bullet(Engine e, float startx, float starty, Dir d) :
             base(e, e.BulletSprite) {
             UpdateState = (CheckCollision);
@@ -14,35 +16,35 @@ namespace Entities {
             direction = d;
             switch (d) {
                 case Dir.up:
-                    vy = -4;
+                    vy = -velocity;
                     anim.Set(3, 3, 0, false);
                     break;
                 case Dir.up_right:
-                    vy = -4; vx = 4;
+                    vy = -velocity; vx = velocity;
                     anim.Set(7, 7, 0, false);
                     break;
                 case Dir.right:
-                    vx = 4;
+                    vx = velocity;
                     anim.Set(0, 0, 0, false);
                     break;
                 case Dir.down_right:
-                    vx = 4; vy = 4;
+                    vx = velocity; vy = velocity;
                     anim.Set(4, 4, 0, false);
                     break;
                 case Dir.down:
-                    vy = 4;
+                    vy = velocity;
                     anim.Set(2, 2, 0, false);
                     break;
                 case Dir.down_left:
-                    vy = 4; vx = -4;
+                    vy = velocity; vx = -velocity;
                     anim.Set(5, 5, 0, false);
                     break;
                 case Dir.left:
-                    vx = -4;
+                    vx = -velocity;
                     anim.Set(1, 1, 0, false);
                     break;
                 case Dir.up_left:
-                    vx = -4; vy = -4;
+                    vx = -velocity; vy = -velocity;
                     anim.Set(6, 6, 0, false);
                     break;
             }
