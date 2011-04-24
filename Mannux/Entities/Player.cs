@@ -42,13 +42,13 @@ namespace Entities {
         const int jumpheight = 50;
 
         /*	const float groundfriction=0.08f;
-                const float airfriction=0.08f;
-		
-                const float groundaccel=0.16f;
-                const float airaccel=0.16f;
-		
-                const float maxxvelocity=1.5f;
-                const float maxyvelocity=50;*/
+            const float airfriction=0.08f;
+	
+            const float groundaccel=0.16f;
+            const float airaccel=0.16f;
+	
+            const float maxxvelocity=1.5f;
+            const float maxyvelocity=50;*/
 
         // ------------- data -------------
 
@@ -212,18 +212,20 @@ namespace Entities {
         public void Stand() {
 
             if (input.Button(key_SPACE)) {
-                if (input.Axis(0) == 0) //shoot up
-				{
+                if (input.Axis(0) == 0) {
+                    //shoot up
                     Fire(Dir.up);
                     SetShootUpState();
-                } else //not pressing up/down
-				{
+                } else {
+                    //not pressing up/down
                     Fire(direction);
                     SetFireState();
                 }
             }
 
-            if (firedelay == 0) { SetStandState(); }
+            if (firedelay == 0) {
+                SetStandState();
+            }
 
 
             if (input.Axis(0) == 255) {
@@ -240,8 +242,8 @@ namespace Entities {
                 return;
             }
 
-            if (input.Button(key_C))	// jump
-			{
+            if (input.Button(key_C)) {
+                // jump
                 SetJumpState();
                 return;
             }
@@ -325,35 +327,26 @@ namespace Entities {
             if (input.Button(key_SPACE)) {
 
                 if (input.Axis(0) == 0) {
-                    //pointing up
                     if (input.Axis(1) == 0) {
-                        //upleft
                         SetFallFireState(Dir.up_left);
                     }
                     if (input.Axis(1) == 255) {
-                        //upright
                         SetFallFireState(Dir.up_right);
                     } else {
-                        //straight up
                         SetFallFireState(Dir.up);
                     }
                 }
-                if (input.Axis(0) == 255) //pointing down
-				{
-                    if (input.Axis(1) == 0) //downleft
-					{
+                if (input.Axis(0) == 255) {
+                    if (input.Axis(1) == 0) {
                         SetFallFireState(Dir.down_left);
                     }
-                    if (input.Axis(1) == 255) //downright
-					{
+                    if (input.Axis(1) == 255) {
                         SetFallFireState(Dir.down_right);
-                    } else //straight down
-					{
+                    } else {
                         SetFallFireState(Dir.down);
                     }
                 }
-                if (input.Axis(0) != 255 && input.Axis(0) != 0) //not pressing up/down
-				{
+                if (input.Axis(0) != 255 && input.Axis(0) != 0) {
                     SetFallFireState(direction);
                 }
             }
