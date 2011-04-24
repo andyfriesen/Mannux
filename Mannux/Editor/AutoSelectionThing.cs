@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Editor {
 
-    class AutoSelectionThing : Form {
+    class AutoSelectionThing : Control {
         Editor editor;
 
         TextBox firsttile;
@@ -55,7 +55,6 @@ namespace Editor {
             Button c = new Button();
             c.Text = "Close";
             c.Location = new Point(b.Right + 5, b.Top);
-            CancelButton = c;
             Controls.Add(c);
         }
 
@@ -83,11 +82,6 @@ namespace Editor {
             }
 
             editor.copypastemode.Selection = b;
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
-            e.Cancel = true;
-            Hide();
         }
     }
 

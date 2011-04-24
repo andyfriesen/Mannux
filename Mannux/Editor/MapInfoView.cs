@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 namespace Editor {
-    class MapInfoView : Form {
+    class MapInfoView : Control {
         Editor editor;
         Engine engine;
 
@@ -24,8 +24,7 @@ namespace Editor {
             curlay.Top = 10;
             curlay.SelectedIndexChanged += new EventHandler(SwitchLayer);
 
-            object[][] layerbuttons = new object[][]
-			{
+            object[][] layerbuttons = new object[][] {
 				new object[] {	"Move &Up",		new EventHandler(MoveLayerUp)	},
 				new object[] {	"Move &Down",	new EventHandler(MoveLayerDown)	},
 				new object[] {	"&Remove",		new EventHandler(RemoveLayer)	},
@@ -206,13 +205,6 @@ namespace Editor {
             engine.map.Resize(Convert.ToInt32(widthbox.Text), Convert.ToInt32(heightbox.Text));
             Update();
 
-        }
-
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
-            e.Cancel = true;
-            Hide();
-            base.OnClosing(e);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 namespace Editor {
     delegate void ChangeTileHandler(int t);
 
-    class TileSetPreview : Form {
+    class TileSetPreview : ScrollableControl {
         class DoubleBufferedPanel : Panel {
             public DoubleBufferedPanel() {
                 SetStyle(
@@ -23,9 +23,7 @@ namespace Editor {
         Panel panel = new DoubleBufferedPanel();
 
         public TileSetPreview(Tileset t) {
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Text = "Tile set";
-            ShowInTaskbar = false;
 
             BackColor = Color.Black;
 
@@ -67,11 +65,5 @@ namespace Editor {
         }
 
         public event ChangeTileHandler ChangeTile;
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
-            e.Cancel = true;
-            Hide();
-            base.OnClosing(e);
-        }
     }
 }

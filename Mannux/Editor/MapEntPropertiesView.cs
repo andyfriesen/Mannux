@@ -5,8 +5,7 @@ using System.Windows.Forms;
 using Import;
 
 namespace Editor {
-
-    class MapEntPropertiesView : Form {
+    class MapEntPropertiesView : Control {
         Editor editor;
         Engine engine;
 
@@ -20,9 +19,7 @@ namespace Editor {
             editor = e;
             engine = e.engine;
 
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Text = "MapEnt properties";
-            ShowInTaskbar = false;
 
             enttypes = new ListBox();
             enttypes.Location = new System.Drawing.Point(10, 10);

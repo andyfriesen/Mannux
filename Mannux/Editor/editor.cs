@@ -17,10 +17,13 @@ using Microsoft.Xna.Framework.Input; // HACK
 namespace Editor {
     class Editor {
         public Engine engine;
-        XNAGraph form;
+        XNAGraph graph;
 
         // UI elements
         MainMenu menu;
+        Form form = new Form();
+        TabControl tabs = new TabControl();
+
         public StatusBar statbar;
         TileSetPreview tilesetpreview;
         MapInfoView mapinfoview;
@@ -37,11 +40,11 @@ namespace Editor {
 
         public event Action OnExit;
 
-        public bool Running;
+        public bool Running = false;
 
         public Editor(Engine e) {
             engine = e;
-            form = e.graph;
+            graph = e.graph;
 
             tileset = new Tileset(
                 new System.Drawing.Bitmap("mantiles.png"),
@@ -52,6 +55,10 @@ namespace Editor {
             copypastemode = new CopyPasteMode(this);
             obstructionmode = new ObstructionMode(this);
             entityeditmode = new EntityEditMode(this);
+
+            tabs.Dock = DockStyle.Fill;
+            form.Controls.Add(tabs);
+            form.Size = new System.Drawing.Size(800, 400);
 
             statbar = new StatusBar();
             statbar.Panels.Add(new StatusBarPanel());
@@ -89,20 +96,25 @@ namespace Editor {
             mapentpropertiesview = new MapEntPropertiesView(this);
             autoselectionthing = new AutoSelectionThing(this);
 
-            mapinfoview.Menu = menu;
+            form.Text = "Mannux Editor";
+            form.Menu = menu;
+            form.Controls.Add(statbar);
+            AddTab("Layers", mapinfoview);
+            AddTab("Entities", mapentpropertiesview);
+            AddTab("Tiles", tilesetpreview);
+            AddTab("Selection", autoselectionthing);
 
             var m = engine.input.Mouse;
             m.MouseDown += MouseClick;
             m.MouseUp += MouseUp;
             m.Moved += MouseDown;
+        }
 
-            // TEMP
-
-            mapinfoview.AddOwnedForm(mapentpropertiesview);
-            mapinfoview.AddOwnedForm(tilesetpreview);
-            mapinfoview.AddOwnedForm(autoselectionthing);
-
-            Running = false;
+        private void AddTab(string text, Control c) {
+            c.Dock = DockStyle.Fill;
+            var tp = new TabPage(text);
+            tp.Controls.Add(c);
+            tabs.TabPages.Add(tp);
         }
 
         public void Init() {
@@ -121,9 +133,7 @@ namespace Editor {
             //    form.XRes, form.YRes// + statbar.Height
             //);
 
-            tilesetpreview.Show();
-            mapinfoview.Show();
-            mapentpropertiesview.Show();
+            form.Show();
 
             state = tilesetmode;
 

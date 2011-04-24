@@ -88,17 +88,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editor\AutoSelectionThing.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\copypastemode.cs" />
     <Compile Include="Editor\Editor.cs" />
     <Compile Include="Editor\EntityEditMode.cs" />
     <Compile Include="Editor\IEditorState.cs" />
     <Compile Include="Editor\MapEntPropertiesView.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\MapInfoView.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\NewMapDlg.cs">
       <SubType>Form</SubType>
@@ -107,7 +107,7 @@
     <Compile Include="Editor\Tileset.cs" />
     <Compile Include="Editor\TileSetMode.cs" />
     <Compile Include="Editor\TileSetPreview.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\Util.cs">
       <SubType>Component</SubType>
