@@ -112,17 +112,28 @@ namespace Editor {
 #endif
         }
 
-        public unsafe void KeyPress(KeyEventArgs e) {
-            int size = 1;
-            if ((Control.ModifierKeys & Keys.Shift) != 0)
-                size = 10;
+        readonly Keys[] MOVE_KEYS = new Keys[] { Keys.NumPad2, Keys.NumPad4, Keys.NumPad6, Keys.NumPad8 };
 
-            switch (e.KeyCode) {
-                case Keys.NumPad8: engine.map.Obs.Points[curpoint].Y -= size; break;
-                case Keys.NumPad2: engine.map.Obs.Points[curpoint].Y += size; break;
-                case Keys.NumPad4: engine.map.Obs.Points[curpoint].X -= size; break;
-                case Keys.NumPad6: engine.map.Obs.Points[curpoint].X += size; break;
-                case Keys.Delete: engine.map.Obs.RemovePoint(curpoint); curpoint = 0; break;
+        public unsafe void KeyPress(KeyEventArgs e) {
+            if (-1 != Array.IndexOf(MOVE_KEYS, e.KeyCode)) {
+                int distance = 1;
+                if ((Control.ModifierKeys & Keys.Shift) != 0) {
+                    distance = 10;
+                }
+
+                var pos = engine.map.Obs.Points[curpoint];
+
+                switch (e.KeyCode) {
+                    case Keys.NumPad8: pos.Y -= distance; break;
+                    case Keys.NumPad2: pos.Y += distance; break;
+                    case Keys.NumPad4: pos.X -= distance; break;
+                    case Keys.NumPad6: pos.X += distance; break;
+                }
+                engine.map.Obs.Points[curpoint] = pos;
+
+            } else if (e.KeyCode == Keys.Delete) {
+                engine.map.Obs.RemovePoint(curpoint);
+                curpoint = 0;
             }
         }
 
@@ -130,6 +141,8 @@ namespace Editor {
         }
 
         public void RenderHUD() {
+            //engine.graph.DrawPoints(engine.map.Obs.Points, Microsoft.Xna.Framework.Graphics.Color.Lime);
+
 #if false
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
             Gl.glColor4f(1, 1, 1, 1);
@@ -137,7 +150,7 @@ namespace Editor {
 
             Gl.glBegin(Gl.GL_LINES);
 
-            Import.PointCollection points = engine.map.Obs.Points;
+            var points = engine.map.Obs.Points;
             foreach (int[] p in engine.map.Obs.lines) {
                 Gl.glVertex2i(points[p[0]].X, points[p[0]].Y);
                 Gl.glVertex2i(points[p[1]].X, points[p[1]].Y);

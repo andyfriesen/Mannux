@@ -1,20 +1,20 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Import.Geo;
 
 namespace Import {
     [Serializable]
     public class VectorIndexBuffer {
-
-        public PointCollection points;	// arraylist of Point structs
-        public System.Collections.ArrayList lines;		// arraylist of int[2]'s
+        private readonly List<Vertex> points = new List<Vertex>();
+        public ArrayList lines;		// arraylist of int[2]'s
 
         public VectorIndexBuffer() {
-            points = new PointCollection();
+            points = new List<Vertex>();
             lines = new System.Collections.ArrayList();
         }
 
-        public PointCollection Points { get { return points; } }
+        public List<Vertex> Points { get { return points; } }
 
         public System.Collections.ArrayList Lines { get { return lines; } }
 
