@@ -17,11 +17,11 @@ namespace Editor {
             engine = e.engine;
         }
 
-        public void MouseDown(Point e) {
-            MouseClick(e);
+        public void MouseDown(Point e, Input.MouseButton b) {
+            MouseClick(e, b);
         }
 
-        public void MouseUp(Point e) {
+        public void MouseUp(Point e, Input.MouseButton b) {
         }
 
         public void MouseWheel(Point p, int delta) {
@@ -33,7 +33,11 @@ namespace Editor {
                 curtile -= editor.tileset.NumTiles;
         }
 
-        public void MouseClick(Point e) {
+        public void MouseClick(Point e, Input.MouseButton b) {
+            if (b != Input.MouseButton.Left) {
+                return;
+            }
+
             int tilex = (e.X + engine.XWin) / engine.tileset.Width;
             int tiley = (e.Y + engine.YWin) / engine.tileset.Height;
 

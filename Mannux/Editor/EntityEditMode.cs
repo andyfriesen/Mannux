@@ -31,14 +31,14 @@ namespace Editor {
             return null;
         }
 
-        public void MouseDown(Point e) {
+        public void MouseDown(Point e, Input.MouseButton b) {
         }
 
-        public void MouseUp(Point e) {
+        public void MouseUp(Point e, Input.MouseButton b) {
 
         }
 
-        public void MouseClick(Point e) {
+        public void MouseClick(Point e, Input.MouseButton b) {
             int x = e.X + engine.XWin;
             int y = e.Y + engine.YWin;
 

@@ -45,7 +45,7 @@ namespace Editor {
 
             tileset = new Tileset(
                 new System.Drawing.Bitmap("mantiles.png"),
-                16, 16, 42 * 18
+                16, 16, 19, 42 * 18
             );
 
             tilesetmode = new TileSetMode(this);
@@ -94,7 +94,7 @@ namespace Editor {
             var m = engine.input.Mouse;
             m.MouseDown += MouseClick;
             m.MouseUp += MouseUp;
-            m.Moved += (p, b) => MouseDown(p);
+            m.Moved += MouseDown;
 
             // TEMP
 
@@ -192,16 +192,16 @@ namespace Editor {
             state.RenderHUD();
         }
 
-        void MouseClick(Point pos) {
-            state.MouseClick(pos);
+        void MouseClick(Point pos, Input.MouseButton b) {
+            state.MouseClick(pos, b);
         }
 
-        void MouseDown(Point pos) {
-            state.MouseDown(pos);
+        void MouseDown(Point pos, Input.MouseButton b) {
+            state.MouseDown(pos, b);
         }
 
-        void MouseUp(Point pos) {
-            state.MouseUp(pos);
+        void MouseUp(Point pos, Input.MouseButton b) {
+            state.MouseUp(pos, b);
         }
 
         void KeyPress(object o, KeyEventArgs e) {

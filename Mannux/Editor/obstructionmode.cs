@@ -84,10 +84,10 @@ namespace Editor {
             }
         }
 
-        public void MouseDown(Microsoft.Xna.Framework.Point e) {
+        public void MouseDown(Point e, Input.MouseButton b) {
         }
 
-        public void MouseUp(Microsoft.Xna.Framework.Point e) {
+        public void MouseUp(Point e, Input.MouseButton b) {
 #if true
             leftdown = false;
 #else
@@ -98,7 +98,7 @@ namespace Editor {
 #endif
         }
 
-        public void MouseClick(Microsoft.Xna.Framework.Point e) {
+        public void MouseClick(Point e, Input.MouseButton b) {
             int x = e.X + engine.XWin;
             int y = e.Y + engine.YWin;
 
@@ -126,7 +126,7 @@ namespace Editor {
             }
         }
 
-        public void MouseWheel(Microsoft.Xna.Framework.Point p, int delta) {
+        public void MouseWheel(Point p, int delta) {
         }
 
         public void RenderHUD() {

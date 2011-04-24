@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using Import;
 using Import.Geo;
+using Microsoft.Xna.Framework;
 
 namespace Editor {
     class CopyPasteMode : IEditorState {
@@ -27,7 +28,7 @@ namespace Editor {
             engine = e.engine;
         }
 
-        public void MouseDown(Microsoft.Xna.Framework.Point e) {
+        public void MouseDown(Point e, Input.MouseButton b) {
             int x = e.X;
             int y = e.Y;
 
@@ -51,7 +52,7 @@ namespace Editor {
             }
         }
 
-        public void MouseUp(Microsoft.Xna.Framework.Point e) {
+        public void MouseUp(Point e, Input.MouseButton b) {
             switch (state) {
                 case EditState.Copying: {
                     int x1 = p1.X;
@@ -86,7 +87,7 @@ namespace Editor {
             y = (y + engine.YWin) / engine.tileset.Height;
         }
 
-        public void MouseClick(Microsoft.Xna.Framework.Point e) {
+        public void MouseClick(Point e, Input.MouseButton b) {
             if ((Control.ModifierKeys & Keys.Shift) != 0) {
                 int x = e.X;
                 int y = e.Y;
@@ -120,7 +121,7 @@ namespace Editor {
 
         }
 
-        public void MouseWheel(Microsoft.Xna.Framework.Point p, int delta) {
+        public void MouseWheel(Point p, int delta) {
         }
 
         public void RenderHUD() {

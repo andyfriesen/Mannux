@@ -47,7 +47,7 @@ namespace Editor {
         }
 
         void Draw(object o, PaintEventArgs e) {
-            e.Graphics.DrawImageUnscaled(tileset.Bitmap, new Point(0, 0));
+            e.Graphics.DrawImage(tileset.Bitmap, new Rectangle(0, 0, tileset.Bitmap.Width, tileset.Bitmap.Height));
         }
 
         void OnResize(object o, EventArgs e) {
@@ -57,7 +57,7 @@ namespace Editor {
         void OnClick(object o, MouseEventArgs e) {
             int i = tileset.TileFromPoint(e.X, e.Y);
 
-            Console.WriteLine("Click on tile: {0}", i);
+            Console.WriteLine("Click {0},{1} on tile: {2}", e.X, e.Y, i);
             Point p = tileset.PointFromTile(i);
             Console.WriteLine("{0},{1}", p.X, p.Y);
 
