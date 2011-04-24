@@ -3,12 +3,10 @@ using System;
 using Entities.Enemies;
 
 namespace Entities {
-
     class Bullet : Entity {
         public Bullet(Engine e, float startx, float starty, Dir d) :
-            base(e, e.BulletSprite)
-        {
-            UpdateState = new StateHandler(CheckCollision);
+            base(e, e.BulletSprite) {
+            UpdateState = (CheckCollision);
 
             x = startx;
             y = starty;
@@ -83,7 +81,5 @@ namespace Entities {
 
             engine.DestroyEntity(this);
         }
-
     }
-
 }

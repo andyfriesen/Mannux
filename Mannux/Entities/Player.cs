@@ -68,7 +68,7 @@ namespace Entities {
 
             System.Console.WriteLine("Player {0}x{1}", width, height);
 
-            UpdateState = new StateHandler(Walk);
+            UpdateState = Walk;
         }
 
         protected override void Update() {
@@ -105,63 +105,63 @@ namespace Entities {
         // ------------------ State changers ---------------
 
         public void SetStandState() {
-            UpdateState = new StateHandler(Stand);
+            UpdateState = Stand;
             anim.Set(AnimState.playerstand[(int)direction]);
         }
 
         public void SetShootUpState() {
-            UpdateState = new StateHandler(Stand);
+            UpdateState = Stand;
             anim.Set(AnimState.playershootup[(int)direction]);
         }
 
         public void SetWalkState() {
-            UpdateState = new StateHandler(Walk);
+            UpdateState = Walk;
             anim.Set(AnimState.playerwalk[(int)direction]);
         }
 
         public void SetWalkFireState() {
-            UpdateState = new StateHandler(Walk);
+            UpdateState = Walk;
             anim.Set(AnimState.playerwalkshooting[(int)direction]);
         }
 
         public void SetFireState() {
-            UpdateState = new StateHandler(Stand);
+            UpdateState = Stand;
             anim.Set(AnimState.playershooting[(int)direction]);
         }
 
         public void SetWalkFireAngleUpState() {
-            UpdateState = new StateHandler(Walk);
+            UpdateState = Walk;
             anim.Set(AnimState.playerwalkshootingangleup[(int)direction]);
         }
 
         public void SetWalkFireAngleDownState() {
-            UpdateState = new StateHandler(Walk);
+            UpdateState = Walk;
             anim.Set(AnimState.playerwalkshootingangledown[(int)direction]);
         }
 
         public void SetJumpState() {
             jumpcount = jumpheight;
-            UpdateState = new StateHandler(Jump);
+            UpdateState = Jump;
             anim.Set(AnimState.playerjump[(int)direction]);
         }
 
         public void SetFallState() {
-            UpdateState = new StateHandler(Fall);
+            UpdateState = Fall;
             anim.Set(AnimState.playerfall[(int)direction]);
         }
 
         public void SetCrouchState() {
-            UpdateState = new StateHandler(Crouch);
+            UpdateState = Crouch;
             anim.Set(AnimState.playercrouch[(int)direction]);
         }
 
         public void SetCrouchFireState() {
-            UpdateState = new StateHandler(Crouch);
+            UpdateState = Crouch;
             anim.Set(AnimState.playercrouchshooting[(int)direction]);
         }
 
         public void SetFallFireState(Dir d) {
-            UpdateState = new StateHandler(Fall);
+            UpdateState = Fall;
             Fire(d);
             switch (d) {
                 case Dir.up:
@@ -192,7 +192,7 @@ namespace Entities {
         }
 
         public void SetHurtState() {
-            UpdateState = new StateHandler(Hurt);
+            UpdateState = Hurt;
             anim.Set(AnimState.hurt[(int)direction]);
         }
 

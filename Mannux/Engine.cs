@@ -95,12 +95,10 @@ class Engine : Game {
     }
 
     private void StartEditor() {
-        Window.Title = "Mannux - Editor";
         editor.Execute();
     }
 
     private void StopEditor() {
-        Window.Title = "Mannux";
     }
 
     protected override void Draw(GameTime gameTime) {

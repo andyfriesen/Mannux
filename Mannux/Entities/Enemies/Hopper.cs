@@ -1,9 +1,7 @@
 
 namespace Entities.Enemies {
-
     class Hopper : Enemy {
         int delay = 0;
-
 
         public Hopper(Engine e, int startx, int starty)
             : base(e, e.RipperSprite) {
@@ -18,9 +16,8 @@ namespace Entities.Enemies {
             direction = Dir.right;
             anim.Set(2, 3, 10, true);
 
-            UpdateState = new StateHandler(DoTick);
+            UpdateState = DoTick;
         }
-
 
         // states
         public void DoTick() {
@@ -59,7 +56,5 @@ namespace Entities.Enemies {
                 anim.Set(0, 1, 10, true);
             }
         }
-
     }
-
 }

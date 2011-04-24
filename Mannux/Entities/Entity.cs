@@ -4,9 +4,6 @@ using Import.Geo;
 using Sprites;
 
 namespace Entities {
-
-    delegate void StateHandler();
-
     // direction.
     enum Dir {
         left,
@@ -45,7 +42,7 @@ namespace Entities {
 
         protected bool visible = true;
 
-        protected StateHandler UpdateState;		//!< Updates the entity's state.  This delegate gets changed around a lot. ;)
+        protected Action UpdateState;		//!< Updates the entity's state.  This delegate gets changed around a lot. ;)
 
         protected Engine engine;
 
@@ -56,8 +53,8 @@ namespace Entities {
             width = sprite.HotSpot.Width;
             height = sprite.HotSpot.Height;
 
-            UpdateState = new StateHandler(DoNothing);	// avoid null references		
-        }
+            UpdateState = DoNothing;	// avoid null references
+       }
 
         void DoNothing() { }
 
