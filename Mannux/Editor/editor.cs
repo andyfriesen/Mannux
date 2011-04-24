@@ -98,10 +98,9 @@ namespace Editor {
 
             // TEMP
 
-            //form.AddOwnedForm(mapinfoview);
-            //form.AddOwnedForm(mapentpropertiesview);
-            //form.AddOwnedForm(tilesetpreview);
-            //form.AddOwnedForm(autoselectionthing);
+            mapinfoview.AddOwnedForm(mapentpropertiesview);
+            mapinfoview.AddOwnedForm(tilesetpreview);
+            mapinfoview.AddOwnedForm(autoselectionthing);
 
             Running = false;
         }

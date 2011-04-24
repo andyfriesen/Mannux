@@ -198,8 +198,9 @@ class Engine : Game {
     }
 
     public void RenderEntities() {
-        foreach (Entity e in entities)
+        foreach (Entity e in entities) {
             RenderEntity(e);
+        }
     }
 
     public void Render() {
@@ -213,8 +214,10 @@ class Engine : Game {
 
         int n = 0;
         foreach (Import.Map.Layer l in map.Layers) {
-            RenderLayer(l, n != 0);
-            n++;
+            if (l.visible) {
+                RenderLayer(l, n != 0);
+                n++;
+            }
         }
         RenderEntities();
     }

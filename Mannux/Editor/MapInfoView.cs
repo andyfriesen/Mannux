@@ -16,9 +16,7 @@ namespace Editor {
             editor = e;
             engine = e.engine;
 
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Text = "Map Properties";
-            ShowInTaskbar = false;
 
             curlay = new ListBox();
             Controls.Add(curlay);
