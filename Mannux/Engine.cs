@@ -57,9 +57,9 @@ class Engine : Game {
         input = new InputHandler();
 
         tileset = new BitmapSprite(graph, "mantiles", 16, 16, 19, new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16));
-        TabbySprite = new BitmapSprite(graph, "tabpis", 64, 64, 8, new Rectangle(0, 0, 64, 64));
+        TabbySprite = new BitmapSprite(graph, "tabpis", 64, 64, 8, new Rectangle(24, 24, 16, 40));
         DoorSprite = new BitmapSprite(graph, "door", 16, 64, 7, new Rectangle(0, 0, 16, 64));
-        RipperSprite = new BitmapSprite(graph, "ripper", 16, 32, 4, new Rectangle(0, 0, 16, 32));
+        RipperSprite = new BitmapSprite(graph, "ripper", 16, 32, 4, new Rectangle(0, 0, 16, 20));
         BoomSprite = new BitmapSprite(graph, "boom", 16, 16, 7, new Rectangle(0, 0, 16, 16));
         BulletSprite = new BitmapSprite(graph, "bullet", 8, 8, 8, new Rectangle(0, 0, 8, 8));
 
