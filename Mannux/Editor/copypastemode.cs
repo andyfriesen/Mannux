@@ -18,8 +18,8 @@ namespace Editor {
 
         Editor editor;
         Engine engine;
-        Vec2i p1;
-        Vec2i p2;
+        Vertex p1;
+        Vertex p2;
         int[,] curselection;
         EditState state = EditState.DoingNothing;
 

@@ -20,7 +20,7 @@ namespace Entities {
     abstract class Entity {
         // constants
         protected const float maxvelocity = 4;
-        protected const float gravity = 0.13f;
+        protected const float gravity = 0.217f;
 
         // lots of fun state flags for fun funness.
         protected bool touchingground;
