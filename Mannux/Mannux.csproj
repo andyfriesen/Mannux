@@ -124,12 +124,13 @@
     <Compile Include="Entities\Enemies\Skree.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Import\AutoArray.cs" />
     <Compile Include="Import\Geo\Line.cs" />
+    <Compile Include="Import\Geo\Vec2i.cs" />
     <Compile Include="Import\Geo\Vertex.cs" />
     <Compile Include="Import\MannuxMap.cs" />
     <Compile Include="Import\Map.cs" />
     <Compile Include="Import\MapEnt.cs" />
-    <Compile Include="Import\PointCollection.cs" />
     <Compile Include="Import\v2Map.cs" />
     <Compile Include="Import\v2rle.cs" />
     <Compile Include="Import\VectorIndexBuffer.cs" />

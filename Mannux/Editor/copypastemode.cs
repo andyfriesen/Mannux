@@ -18,8 +18,8 @@ namespace Editor {
 
         Editor editor;
         Engine engine;
-        Vertex p1 = new Vertex();
-        Vertex p2 = new Vertex();
+        Vec2i p1;
+        Vec2i p2;
         int[,] curselection;
         EditState state = EditState.DoingNothing;
 
@@ -55,12 +55,12 @@ namespace Editor {
         public void MouseUp(Point e, Input.MouseButton b) {
             switch (state) {
                 case EditState.Copying: {
-                    int x1 = p1.X;
-                    int y1 = p1.Y;
-                    int x2 = p2.X;
-                    int y2 = p2.Y;
+                    var x1 = (int)p1.X;
+                    var y1 = (int)p1.Y;
+                    var x2 = (int)p2.X;
+                    var y2 = (int)p2.Y;
 
-                    int i;
+                    var i = x1;
                     if (x1 > x2) { i = x1; x1 = x2; x2 = i; }
                     if (y1 > y2) { i = y1; y1 = y2; y2 = i; }
 

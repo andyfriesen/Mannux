@@ -18,11 +18,11 @@ namespace Editor {
             engine = e.engine;
         }
 
-        int dist(ref Vertex p, int x, int y) {
-            int dx = p.X - x;
-            int dy = p.Y - y;
+        float dist(ref Vertex p, float x, float y) {
+            var dx = p.X - x;
+            var dy = p.Y - y;
 
-            return (int)Math.Sqrt(dx * dx + dy * dy);
+            return (float)Math.Sqrt(dx * dx + dy * dy);
         }
 
         void LeftClick(int x, int y) {
@@ -33,7 +33,7 @@ namespace Editor {
 
             // find the nearest point
             int idx = 0;
-            int best = 99999;
+            var best = 99999.0f;
             for (int i = 0; i < engine.map.Obs.Points.Count; i++) {
                 var p = (Vertex)engine.map.Obs.Points[i];
                 var d = dist(ref p, x, y);

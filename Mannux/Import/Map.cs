@@ -4,10 +4,8 @@ using System.Runtime.Serialization;
 
 namespace Import {
     //! Represents a map
-    [Serializable]
     public class Map {
         //! Represents one map layer.
-        [Serializable]
         public class Layer {
             int[,] tiles;
             string name;

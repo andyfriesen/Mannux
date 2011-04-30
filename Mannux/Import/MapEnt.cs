@@ -2,7 +2,6 @@ using System;
 using System.Runtime.Serialization;
 
 namespace Import {
-    [Serializable]
     public class MapEnt {
         public int x;
         public int y;

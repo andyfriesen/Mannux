@@ -1,21 +1,25 @@
 using System;
 
 namespace Import.Geo {
-    [Serializable]
     public struct Vertex {
-        int x, y;
+        float x, y;
 
         public Vertex(int a, int b) {
             x = a;
             y = b;
         }
 
-        public int X {
+        public Vertex(float a, float b) {
+            x = a;
+            y = b;
+        }
+
+        public float X {
             get { return x; }
             set { x = value; }
         }
 
-        public int Y {
+        public float Y {
             get { return y; }
             set { y = value; }
         }

@@ -44,13 +44,11 @@ namespace Cataract {
             // blah.
         }
 
-        public void DrawPoints(Point[] points, Color color) {
-            VertexPositionColor[] vertexData = new VertexPositionColor[points.Length];
-            for (var i = 0; i < points.Length; ++i) {
-                vertexData[i].Position = new Vector3(points[i].X, points[i].Y, 0);
-                vertexData[i].Color = color;
-            }
-            device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.PointList, vertexData, 0, points.Length);
+        public void DrawPoints(Import.Geo.Vertex[] points, Color color) {
+        }
+
+        public void DrawPoints(VertexPositionColor[] points, Color color) {
+            device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.PointList, points, 0, points.Length);
         }
 
         public void Clear() {

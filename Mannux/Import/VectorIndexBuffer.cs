@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Import.Geo;
 
 namespace Import {
-    [Serializable]
     public class VectorIndexBuffer {
         private readonly List<Vertex> points = new List<Vertex>();
         public ArrayList lines;		// arraylist of int[2]'s
