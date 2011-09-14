@@ -15,6 +15,12 @@ namespace Cataract {
             spriteBatch = new SpriteBatch(device);
         }
 
+        public SpriteBatch SpriteBatch {
+            get {
+                return spriteBatch;
+            }
+        }
+
         public void Begin() {
             spriteBatch.Begin();
         }

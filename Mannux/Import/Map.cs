@@ -14,8 +14,8 @@ namespace Import {
 
             public bool visible;	// if true, the layer is rendered
 
-            internal Layer(int width, int height, string n) {
-                name = n;
+            internal Layer(int width, int height, string name) {
+                this.name = name;
                 tiles = new int[width, height];
                 parx = pary = 1;
                 visible = true;

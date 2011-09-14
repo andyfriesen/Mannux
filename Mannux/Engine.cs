@@ -27,6 +27,7 @@ class Engine : Game {
     private GraphicsDeviceManager graphics;
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
     public Map map;
+    private Squared.Tiled.Map tmap;
     public BitmapSprite tileset;
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
@@ -70,6 +71,8 @@ class Engine : Game {
         map = v2Map.Load("map00.map");
         MapSwitch("data/maps/test.map");
         obs = new VectorObstructionMap(map.Obs);
+
+        tmap = Squared.Tiled.Map.Load("tiledtest.tmx", Content);
 
         time = new Timer(100);
 
@@ -210,13 +213,14 @@ class Engine : Game {
             YWin = cameraTarget.Y - graph.YRes / 2;
         }
 
-        int n = 0;
+        /*int n = 0;
         foreach (Import.Map.Layer l in map.Layers) {
             if (l.visible) {
                 RenderLayer(l, n != 0);
                 n++;
             }
-        }
+        }*/
+        tmap.Draw(graph.SpriteBatch, new Rectangle(0, 0, graph.XRes, graph.YRes), new Vector2(xwin, ywin));
         RenderEntities();
     }
 
