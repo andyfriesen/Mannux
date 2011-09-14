@@ -71,8 +71,8 @@ namespace Squared.Tiled {
             result.FirstTileID = int.Parse(reader.GetAttribute("firstgid"));
             result.TileWidth = int.Parse(reader.GetAttribute("tilewidth"));
             result.TileHeight = int.Parse(reader.GetAttribute("tileheight"));
-            result.spacing = int.Parse(reader.GetAttribute("spacing"));
-            result.margin = int.Parse(reader.GetAttribute("margin"));
+            result.spacing = int.Parse(reader.GetAttribute("spacing") ?? "0");
+            result.margin = int.Parse(reader.GetAttribute("margin") ?? "0");
 
             int currentTileId = -1;
 
@@ -247,7 +247,6 @@ namespace Squared.Tiled {
                                             switch (st.NodeType) {
                                                 case XmlNodeType.Element:
                                                     if (st.Name == "property") {
-                                                        st.Read();
                                                         if (st.GetAttribute("name") != null) {
                                                             result.Properties.Add(st.GetAttribute("name"), st.GetAttribute("value"));
                                                         }
@@ -304,6 +303,10 @@ namespace Squared.Tiled {
         }
 
         public void Draw(SpriteBatch batch, IList<Tileset> tilesets, Rectangle rectangle, Vector2 viewportPosition, int tileWidth, int tileHeight) {
+            if (Opacity == 0) {
+                return;
+            }
+
             int i = 0;
             Vector2 destPos = new Vector2(rectangle.Left, rectangle.Top);
             Vector2 viewPos = viewportPosition;

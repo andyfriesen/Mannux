@@ -27,10 +27,6 @@ namespace Entities {
         protected bool touchingceiling;
         protected bool touchingleftwall;
         protected bool touchingrightwall;
-        protected Line leftwall;
-        protected Line rightwall;
-        protected Line floor;
-        protected Line ceiling;
 
         // More general purpose state things
         protected float x = 0, y = 0;				//!< Position
@@ -84,20 +80,16 @@ namespace Entities {
             float y2 = y + height;
 
             // up
-            ceiling = engine.IsObs((int)(x + 2), (int)(y + vy), (int)(x2 - 4), (int)(y - vy));
-            touchingceiling = ceiling != null;
+            touchingceiling = engine.IsObs((int)(x + 2), (int)(y + vy), (int)(x2 - 4), (int)(y - vy));
 
             // down
-            floor = engine.IsObs((int)(x + 2), (int)(y2 - vy - 2), (int)(x2 - 4), (int)(y2));
-            touchingground = floor != null;
+            touchingground = engine.IsObs((int)(x + 2), (int)(y2 - vy - 2), (int)(x2 - 4), (int)(y2));
 
             // left
-            leftwall = engine.IsObs((int)(x + vx), (int)(y + 4), (int)(x - vx), (int)(y2 - 2));
-            touchingleftwall = leftwall != null;
+            touchingleftwall = engine.IsObs((int)(x + vx), (int)(y + 4), (int)(x - vx), (int)(y2 - 2));
 
             // right
-            rightwall = engine.IsObs((int)(x2 + vx), (int)(y + 4), (int)(x2 - vx + 4), (int)(y2 - 2));
-            touchingrightwall = rightwall != null;
+            touchingrightwall = engine.IsObs((int)(x2 + vx), (int)(y + 4), (int)(x2 - vx + 4), (int)(y2 - 2));
 
             Update();
 
@@ -105,9 +97,11 @@ namespace Entities {
         }
 
         public void HandleGravity() {
-            if (!touchingground)
+            if (!touchingground) {
                 vy += gravity;
-            else vy = 0;
+            } else {
+                vy = 0;
+            }
         }
 
 
