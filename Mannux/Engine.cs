@@ -34,7 +34,6 @@ class Engine : Game {
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
     public Timer time;
-    public Editor.Editor editor;
     public VectorObstructionMap obs;
 
     public ArrayList entities = new ArrayList();			// entities currently on the map
@@ -87,9 +86,6 @@ class Engine : Game {
         }
 
         time = new Timer(100);
-
-        editor = new Editor.Editor(this);
-        editor.OnExit += StopEditor;
     }
 
     // -------------- Core engine logic --------------------
@@ -97,23 +93,7 @@ class Engine : Game {
     protected override void Update(GameTime gameTime) {
         base.Update(gameTime);
         input.Poll();
-
-        if (editor.Running) {
-            editor.Update();
-        } else {
-            if (input.Keyboard.Button(2)) {
-                editor.Execute();
-            }
-
-            ProcessEntities();
-        }
-    }
-
-    private void StartEditor() {
-        editor.Execute();
-    }
-
-    private void StopEditor() {
+        ProcessEntities();
     }
 
     protected override void Draw(GameTime gameTime) {
