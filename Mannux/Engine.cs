@@ -28,6 +28,8 @@ class Engine : Game {
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
     public Map map;
     private Squared.Tiled.Map tmap;
+    Squared.Tiled.Layer obstructionLayer;
+
     public BitmapSprite tileset;
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
@@ -73,6 +75,16 @@ class Engine : Game {
         obs = new VectorObstructionMap(map.Obs);
 
         tmap = Squared.Tiled.Map.Load("tiledtest.tmx", Content);
+        obstructionLayer = null;
+        foreach (var l in tmap.Layers) {
+            string value;
+            var s = l.Value.Properties.TryGetValue("type", out value);
+            if (s && value == "obstructions") {
+                obstructionLayer = l.Value;
+                obstructionLayer.Opacity = 0;
+                break;
+            }
+        }
 
         time = new Timer(100);
 
@@ -127,8 +139,25 @@ class Engine : Game {
         addlist.Clear();
     }
 
-    public Line IsObs(int x1, int y1, int x2, int y2) {
-        return obs.Test(x1, y1, x2, y2);
+    public bool IsObs(int x1, int y1, int x2, int y2) {
+        var tx1 = x1 / tmap.TileWidth;
+        var ty1 = y1 / tmap.TileHeight;
+        var tx2 = x2 / tmap.TileWidth;
+        var ty2 = y2 / tmap.TileHeight;
+
+        for (var ty = ty1; ty <= ty2; ++ty) {
+            for (var tx = tx1; tx <= tx2; ++tx) {
+                if (tx < 0 ||
+                    ty < 0 ||
+                    tx >= obstructionLayer.Width ||
+                    ty >= obstructionLayer.Height ||
+                    obstructionLayer.GetTile(tx, ty) != 0
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public int XWin {

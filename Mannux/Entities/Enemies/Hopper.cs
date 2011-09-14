@@ -24,7 +24,7 @@ namespace Entities.Enemies {
             HandleGravity();
 
             if (touchingground) {
-                y = floor.atX(x + width / 2) - height;	// so that it doesn't go through the floor
+                //y = floor.atX(x + width / 2) - height;	// so that it doesn't go through the floor
                 if (delay == 0) {
                     delay = 5;
                     vx = 0;

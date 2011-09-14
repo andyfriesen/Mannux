@@ -255,8 +255,9 @@ namespace Entities {
             if (!touchingground) {
                 SetFallState();
                 return;
-            } else
-                y = floor.atX(x + width / 2) - height;
+            } else {
+                //y = floor.atX(x + width / 2) - height;
+            }
         }
 
         public void Walk() {
@@ -426,7 +427,7 @@ namespace Entities {
                 vy = 0;
 
                 // to avoid being embedded in the floor
-                y = floor.atX(x + width / 2) - height;
+                //y = floor.atX(x + width / 2) - height;
             }
 
             vx = Vector.Decrease(vx, airfriction);
