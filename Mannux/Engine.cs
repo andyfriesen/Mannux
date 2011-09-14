@@ -1,8 +1,6 @@
 
 using Cataract;
 using Input;
-using Import;
-using Import.Geo;
 using Sprites;
 
 using Entities;
@@ -155,45 +153,6 @@ class Engine : Game {
         }
     }
     // ----------- Rendering pipeline -------------------
-
-    public void RenderLayer(Map.Layer lay, bool transparent) {
-        int xl, yl;        // x/y run length
-        int xs, ys;        // x/y start
-        int xofs, yofs;    // sub-tile offset
-        int xw, yw;
-
-        xw = (int)(lay.ParallaxX * xwin);
-        yw = (int)(lay.ParallaxY * ywin);
-
-        xs = xw / tileset.Width;
-        ys = yw / tileset.Height;
-
-        xofs = -(xw % tileset.Width);
-        yofs = -(yw % tileset.Height);
-
-        xl = graph.XRes / tileset.Width + 1;
-        yl = graph.YRes / tileset.Height + 2;
-
-        if (xs + xl > lay.Width) xl = lay.Width - xs;        // clip yo
-        if (ys + yl > lay.Height) yl = lay.Height - ys;
-
-        int curx = xofs;
-        int cury = yofs;
-
-        for (int y = 0; y < yl; y++) {
-            for (int x = 0; x < xl; x++) {
-                int t = lay[x + xs, y + ys];
-
-                if (t != 0 || !transparent) {
-                    tileset.Draw(curx, cury, t);
-                }
-                curx += tileset.Width;
-            }
-            cury += tileset.Height;
-            curx = xofs;
-        }
-    }
-
 
     public void RenderEntity(Entity e) {
         int x = e.X - e.sprite.HotSpot.X - xwin;

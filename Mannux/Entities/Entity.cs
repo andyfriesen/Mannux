@@ -1,6 +1,5 @@
 using System;
 
-using Import.Geo;
 using Sprites;
 
 namespace Entities {

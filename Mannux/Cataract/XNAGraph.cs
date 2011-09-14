@@ -50,9 +50,6 @@ namespace Cataract {
             // blah.
         }
 
-        public void DrawPoints(Import.Geo.Vertex[] points, Color color) {
-        }
-
         public void DrawPoints(VertexPositionColor[] points, Color color) {
             device.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.PointList, points, 0, points.Length);
         }

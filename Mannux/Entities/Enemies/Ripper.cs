@@ -1,5 +1,4 @@
 // created on 28/06/2002 at 12:40 AM
-using Import;
 
 namespace Entities.Enemies {
     class Ripper : Enemy {
