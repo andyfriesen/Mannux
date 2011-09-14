@@ -366,6 +366,7 @@ namespace Squared.Tiled {
         public SortedList<string, string> Properties = new SortedList<string, string>();
 
         public string Name;
+        public string Type;
         public int Width, Height, X, Y;
         float Opacity = 1;
 
@@ -444,7 +445,7 @@ namespace Squared.Tiled {
     public class Object {
         public SortedList<string, string> Properties = new SortedList<string, string>();
 
-        public string Name, Image;
+        public string Name, Type, Image;
         public int Width, Height, X, Y;
 
         protected Texture2D _Texture;
@@ -465,6 +466,8 @@ namespace Squared.Tiled {
             var result = new Object();
 
             result.Name = reader.GetAttribute("name");
+            result.Type = reader.GetAttribute("type");
+
             result.X = int.Parse(reader.GetAttribute("x"));
             result.Y = int.Parse(reader.GetAttribute("y"));
             result.Width = int.Parse(reader.GetAttribute("width"));

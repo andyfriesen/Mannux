@@ -26,15 +26,13 @@ class Engine : Game {
     public XNAGraph graph;
     private GraphicsDeviceManager graphics;
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
-    public Map map;
-    private Squared.Tiled.Map tmap;
+    private Squared.Tiled.Map map;
     Squared.Tiled.Layer obstructionLayer;
 
     public BitmapSprite tileset;
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
     public Timer time;
-    public VectorObstructionMap obs;
 
     public ArrayList entities = new ArrayList();			// entities currently on the map
     private ArrayList killlist = new ArrayList();			// entities to be removed
@@ -69,13 +67,10 @@ class Engine : Game {
         cameraTarget = player;
         player.X = player.Y = 32;	// arbitrary, if the map doesn't stipulate a starting point.
 
-        map = v2Map.Load("map00.map");
-        MapSwitch("data/maps/test.map");
-        obs = new VectorObstructionMap(map.Obs);
+        MapSwitch("tiledtest.tmx");
 
-        tmap = Squared.Tiled.Map.Load("tiledtest.tmx", Content);
         obstructionLayer = null;
-        foreach (var l in tmap.Layers) {
+        foreach (var l in map.Layers) {
             string value;
             var s = l.Value.Properties.TryGetValue("type", out value);
             if (s && value == "obstructions") {
@@ -120,10 +115,10 @@ class Engine : Game {
     }
 
     public bool IsObs(int x1, int y1, int x2, int y2) {
-        var tx1 = x1 / tmap.TileWidth;
-        var ty1 = y1 / tmap.TileHeight;
-        var tx2 = x2 / tmap.TileWidth;
-        var ty2 = y2 / tmap.TileHeight;
+        var tx1 = x1 / map.TileWidth;
+        var ty1 = y1 / map.TileHeight;
+        var tx2 = x2 / map.TileWidth;
+        var ty2 = y2 / map.TileHeight;
 
         for (var ty = ty1; ty <= ty2; ++ty) {
             for (var tx = tx1; tx <= tx2; ++tx) {
@@ -144,8 +139,8 @@ class Engine : Game {
         get { return xwin; }
         set {
             xwin = value;
-            if (xwin > map.Width * tileset.Width - graph.XRes)
-                xwin = map.Width * tileset.Width - graph.XRes;
+            if (xwin > map.Width * map.TileWidth - graph.XRes)
+                xwin = map.Width * map.TileHeight - graph.XRes;
             if (xwin < 0) xwin = 0;
         }
     }
@@ -154,8 +149,8 @@ class Engine : Game {
         get { return ywin; }
         set {
             ywin = value;
-            if (ywin > map.Height * tileset.Height - graph.YRes)
-                ywin = map.Height * tileset.Height - graph.YRes;
+            if (ywin > map.Height * map.TileHeight- graph.YRes)
+                ywin = map.Height * map.TileHeight - graph.YRes;
             if (ywin < 0) ywin = 0;
         }
     }
@@ -222,39 +217,25 @@ class Engine : Game {
             YWin = cameraTarget.Y - graph.YRes / 2;
         }
 
-        /*int n = 0;
-        foreach (Import.Map.Layer l in map.Layers) {
-            if (l.visible) {
-                RenderLayer(l, n != 0);
-                n++;
-            }
-        }*/
-        tmap.Draw(graph.SpriteBatch, new Rectangle(0, 0, graph.XRes, graph.YRes), new Vector2(xwin, ywin));
+        map.Draw(graph.SpriteBatch, new Rectangle(0, 0, graph.XRes, graph.YRes), new Vector2(xwin, ywin));
         RenderEntities();
     }
 
     public string mapfilename;
     // TODO: something to indicate how the two maps connect, for a fancy transition type thing
     public void MapSwitch(string mapname) {
-        Map newmap;
-        try {
-            System.IO.Stream fs = new System.IO.FileStream(mapname, System.IO.FileMode.Open);
-            newmap = MannuxMap.Load(fs);
-            fs.Close();
-        } catch (System.Exception ex) {
-            Console.Write(ex.ToString());
-            return;
-        }
-
-        map = newmap;
+        map = Squared.Tiled.Map.Load(mapname, Content);
         mapfilename = mapname;
 
         // nuke all existing entities, except the player
         entities.Clear();
         entities.Add(player);
 
-        foreach (MapEnt e in map.Entities)
-            SpawnEntity(e);
+        foreach (var og in map.ObjectGroups) {
+            foreach (var o in og.Value.Objects) {
+                SpawnEntity(o.Value);
+            }
+        }
     }
 
     public void MapSwitch(string mapname, int x, int y) {
@@ -263,35 +244,35 @@ class Engine : Game {
         player.Y = y;
     }
 
-    void SpawnEntity(MapEnt e) {
+    void SpawnEntity(Squared.Tiled.Object e) {
         // ew.
 
-        switch (e.type) {
+        switch (e.Type) {
             case "player":
                 // Only applies when the game starts on this map.
-                player.X = e.x;
-                player.Y = e.y;
+                player.X = e.X;
+                player.Y = e.Y;
                 break;
 
             case "door":
                 SpawnEntity(new Entities.Door(this,
-                                                  e.x, e.y, 		// door position
-                                                  Dir.left, 		// direction?
-                                                  e.data[0],		// dest map
-                                                  Convert.ToInt32(e.data[1]),		// dest X
-                                                  Convert.ToInt32(e.data[2])));		// dest Y
+                                              e.X, e.Y, 		// door position
+                                              Dir.left, 		// direction?
+                                              e.Properties["destination"],
+                                              Convert.ToInt32(e.Properties["destinationX"]),
+                                              Convert.ToInt32(e.Properties["destinationY"])));
                 break;
 
             case "ripper":
-                SpawnEntity(new Entities.Enemies.Ripper(this, e.x, e.y));
+                SpawnEntity(new Entities.Enemies.Ripper(this, e.X, e.Y));
                 break;
 
             case "hopper":
-                SpawnEntity(new Entities.Enemies.Hopper(this, e.x, e.y));
+                SpawnEntity(new Entities.Enemies.Hopper(this, e.X, e.Y));
                 break;
 
             default:
-                throw new System.Exception(String.Format("Engine::MapSwitch Unknown entity type {0}", e.type));
+                throw new System.Exception(String.Format("Engine::MapSwitch Unknown entity type {0}", e.Type));
         }
     }
 
