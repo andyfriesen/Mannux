@@ -1,6 +1,8 @@
 using System;
 
 using Sprites;
+using Mannux;
+using Microsoft.Xna.Framework;
 
 namespace Entities {
     // direction.
@@ -22,10 +24,26 @@ namespace Entities {
         protected const float gravity = 0.217f;
 
         // lots of fun state flags for fun funness.
-        protected bool touchingground;
-        protected bool touchingceiling;
-        protected bool touchingleftwall;
-        protected bool touchingrightwall;
+        public Line? groundSurface;
+        protected Line? ceilingSurface;
+        protected Line? leftSurface;
+        protected Line? rightSurface;
+
+        protected bool touchingleftwall {
+            get { return leftSurface != null; }
+        }
+
+        protected bool touchingrightwall {
+            get { return rightSurface != null; }
+        }
+
+        protected bool touchingground {
+            get { return groundSurface != null; }
+        }
+
+        protected bool touchingceiling {
+            get { return ceilingSurface != null; }
+        }
 
         // More general purpose state things
         protected float x = 0, y = 0;				//!< Position
@@ -49,7 +67,7 @@ namespace Entities {
             height = sprite.HotSpot.Height;
 
             UpdateState = DoNothing;	// avoid null references
-       }
+        }
 
         void DoNothing() { }
 
@@ -59,40 +77,131 @@ namespace Entities {
         }
 
         public bool Touches(Entity e) {
-            if (x > e.x + e.width)
-                return false;
-            if (y > e.y + e.height)
-                return false;
-            if (e.x > x + width)
-                return false;
-            if (e.y > y + height)
-                return false;
-
-            return true;
+            return
+                (x <= e.x + e.width) &&
+                (y <= e.y + e.height) &&
+                (e.x <= x + width) &&
+                (e.y <= y + height)
+            ;
         }
 
+        const float collisionGranularity = 8.0f;
         public void Tick() {
             /*	vx=Vector.Clamp(vx,maxvelocity);*/
             vy = Vector.Clamp(vy, maxvelocity);
 
-            float x2 = x + width;
-            float y2 = y + height;
+            /* If needed, this can probably be made even faster by simply precomputing the sub-tile (x,y) offset
+             * of the points we are testing, then merely iterating over tiles.
+             * 
+             * As written, we just compute pixel coordinates, and translate each one back into tile coordinates.
+             * This is probably inefficient.
+             * -- andy
+             */
 
-            // up
-            touchingceiling = engine.IsObs((int)(x + 2), (int)(y + vy), (int)(x2 - 4), (int)(y - vy));
-
-            // down
-            touchingground = engine.IsObs((int)(x + 2), (int)(y2 - vy - 2), (int)(x2 - 4), (int)(y2));
-
-            // left
-            touchingleftwall = engine.IsObs((int)(x + vx), (int)(y + 4), (int)(x - vx), (int)(y2 - 2));
-
-            // right
-            touchingrightwall = engine.IsObs((int)(x2 + vx), (int)(y + 4), (int)(x2 - vx + 4), (int)(y2 - 2));
+            DoCollision();
 
             Update();
 
-            x += vx; y += vy;
+            x += vx;
+            y += vy;
+        }
+
+        protected bool TestFloor(float ty) {
+            var g = false;
+#if false
+            for (var tx = x + sprite.HotSpot.Width; tx > x; tx -= collisionGranularity) {
+                g |= engine.IsObs(tx, (int)ty);
+            }
+#endif
+            return g;
+        }
+
+        protected void DoCollision() {
+            var w = sprite.HotSpot.Width;
+            var h = sprite.HotSpot.Height;
+
+            var x2 = x + w;
+            var y2 = y + h;
+
+            const float MAX_GROUND_SLOPE = 1.1f; // anything steeper than this is not a walkable surface
+            const int GROUND_THRESHHOLD = 4;
+
+            var oldGround = groundSurface;
+            groundSurface = null;
+            var groundInterceptY = int.MaxValue;
+            var floorRect = new Rectangle((int)(x + vx), (int)(y2 - 8), w, GROUND_THRESHHOLD);
+
+            Action<Line> cb = (line) => {
+                if (Math.Abs(line.Slope) > MAX_GROUND_SLOPE) {
+                    return;
+                }
+
+                /*
+                 * I think what we want here is to track, for each direction,
+                 * the surface that penetrates the entity's hotspot the most.
+                 */
+
+                var ay1 = line.atX(x + vx + 1);
+                var ay2 = line.atX(x2 + vx - 1);
+
+                Point intercept;
+                if (ay1 < ay2) {
+                    intercept = new Point((int)(x + vx + 1), (int)ay1);
+                } else {
+                    intercept = new Point((int)(x2 + vx - 1), (int)ay2);
+                }
+
+                if (y2 - 16 <= intercept.Y && intercept.Y < y2 + GROUND_THRESHHOLD) {
+                    if (intercept.Y < groundInterceptY) {
+                        groundInterceptY = intercept.Y;
+                        groundSurface = line;
+                    }
+                }
+            };
+            var projectedY = y + vy;
+            if (groundSurface.HasValue && vy == 0.0f) {
+                if (vx > 0) {
+                    projectedY = groundSurface.Value.atX(x + vx + sprite.HotSpot.Width);
+                } else {
+                    projectedY = groundSurface.Value.atX(x + vx);
+                }
+            }
+
+            var r = new Rectangle(
+                (int)(x + vx),
+                (int)(projectedY),
+                sprite.HotSpot.Width,
+                sprite.HotSpot.Height + GROUND_THRESHHOLD
+            );
+
+            engine.GetObstructions(r, cb);
+        }
+
+        private float LineAtX(Line l, float x) {
+            if (x < l.A.X && x < l.B.X) {
+                x = Math.Min(l.A.X, l.B.X);
+            }
+            if (x > l.A.X && x > l.B.X) {
+                x = Math.Max(l.A.X, l.B.X);
+            }
+            return l.atX(x);
+        }
+
+        protected void PlaceOnGround() {
+            if (groundSurface == null) {
+                return;
+            }
+
+            var y1 = LineAtX(groundSurface.Value, x);
+            var y2 = LineAtX(groundSurface.Value, x + sprite.HotSpot.Width);
+
+            var newy = Math.Min(y1, y2) - height;
+
+            var dy = Math.Abs((int)y - (int)newy);
+            if (dy > 1 && dy > vx) {
+                Console.WriteLine("Moving from {0} to {1} dy={2}", y + height, newy + height, dy);
+                y = newy;
+            }
         }
 
         public void HandleGravity() {

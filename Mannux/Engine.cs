@@ -1,5 +1,4 @@
 
-using Cataract;
 using Input;
 using Sprites;
 
@@ -9,32 +8,29 @@ using Entities.Enemies;
 using System;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Collections;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using Mannux;
+
 class Engine : Game {
-    // for convenience.  I don't want to mess with stupid proper OOPness for
-    // something as simple as a random number generator.
-    public static Random rand = new Random();
-
-    // END HACK
-
     public XNAGraph graph;
     private GraphicsDeviceManager graphics;
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
     private Squared.Tiled.Map map;
-    Squared.Tiled.Layer obstructionLayer;
+    private Squared.Tiled.Layer obstructionLayer;
+    ObstructionTileset obstructionTiles;
 
     public BitmapSprite tileset;
     public Entity cameraTarget;	// The engine focuses the camera on this entity
     public Entity player;			// the player entity (merely for convenience)
     public Timer time;
 
-    public ArrayList entities = new ArrayList();			// entities currently on the map
-    private ArrayList killlist = new ArrayList();			// entities to be removed
-    private ArrayList addlist = new ArrayList();			// entities to be added
+    public List<Entity> entities = new List<Entity>();			// entities currently on the map
+    private List<Entity> killlist = new List<Entity>();			// entities to be removed
+    private List<Entity> addlist = new List<Entity>();			// entities to be added
 
     int xwin = 0;
     int ywin = 0;
@@ -47,7 +43,6 @@ class Engine : Game {
     protected override void Initialize() {
         base.Initialize();
         IsMouseVisible = true;
-
     }
 
     protected override void LoadContent() {
@@ -65,6 +60,8 @@ class Engine : Game {
         cameraTarget = player;
         player.X = player.Y = 32;	// arbitrary, if the map doesn't stipulate a starting point.
 
+        obstructionTiles = new ObstructionTileset();
+
         MapSwitch("tiledtest.tmx");
 
         obstructionLayer = null;
@@ -73,7 +70,7 @@ class Engine : Game {
             var s = l.Value.Properties.TryGetValue("type", out value);
             if (s && value == "obstructions") {
                 obstructionLayer = l.Value;
-                obstructionLayer.Opacity = 0;
+                //obstructionLayer.Opacity = 0;
                 break;
             }
         }
@@ -94,6 +91,7 @@ class Engine : Game {
         graph.Begin();
         Render();
         graph.End();
+        RenderEntityHotspots();
     }
 
     void ProcessEntities() {
@@ -112,25 +110,93 @@ class Engine : Game {
         addlist.Clear();
     }
 
-    public bool IsObs(int x1, int y1, int x2, int y2) {
-        var tx1 = x1 / map.TileWidth;
-        var ty1 = y1 / map.TileHeight;
-        var tx2 = x2 / map.TileWidth;
-        var ty2 = y2 / map.TileHeight;
+    public Line? IsObs(float x, float y, float w, float h) {
+        return IsObs((int)x, (int)y, (int)w, (int)h);
+    }
 
-        for (var ty = ty1; ty <= ty2; ++ty) {
-            for (var tx = tx1; tx <= tx2; ++tx) {
-                if (tx < 0 ||
-                    ty < 0 ||
-                    tx >= obstructionLayer.Width ||
-                    ty >= obstructionLayer.Height ||
-                    obstructionLayer.GetTile(tx, ty) != 0
-                ) {
-                    return true;
+    public Line? IsObs(int x, int y, int w, int h) {
+        return IsObs(new Rectangle(x, y, w, h));
+    }
+
+    public Line? IsObs(Rectangle r) {
+        var ty = r.Top / map.TileHeight;
+        var tey = r.Bottom / map.TileHeight;
+        var tx = r.Left / map.TileWidth;
+        var tex = r.Right / map.TileWidth;
+
+        if (ty < 0) {
+            return new Line(0, 0, map.Width, 0);
+        }
+        if (ty >= map.Height) {
+            return new Line(0, map.Height, map.Width, map.Height);
+        }
+        if (tx < 0) {
+            return new Line(0, 0, 0, map.Height);
+        }
+        if (tx >= map.Width) {
+            return new Line(map.Width, 0, map.Width, map.Height);
+        }
+
+        for (var y = ty; y <= tey; ++y) {
+            for (var x = tx; x <= tex; ++x) {
+                var s = r;
+                s.Offset(-x * map.TileWidth, -y * map.TileHeight);
+
+                var result = obstructionTiles.Test(obstructionLayer.GetTile(x, y), s);
+                if (result != null) {
+                    var q = result.Value;
+                    q.Offset(x * map.TileWidth, y * map.TileHeight);
+                    return q;
                 }
             }
         }
-        return false;
+
+        return null;
+    }
+
+    public void GetObstructions(Rectangle r, Action<Line> cb) {
+        var ty = r.Top / map.TileHeight;
+        var tey = r.Bottom / map.TileHeight;
+        var tx = r.Left / map.TileWidth;
+        var tex = r.Right / map.TileWidth;
+
+        if (ty < 0) {
+            cb(new Line(0, 0, map.Width, 0));
+            return;
+        }
+        if (ty >= map.Height) {
+            cb(new Line(0, map.Height, map.Width, map.Height));
+            return;
+        }
+        if (tx < 0) {
+            cb(new Line(0, 0, 0, map.Height));
+            return;
+        }
+        if (tx >= map.Width) {
+            cb(new Line(map.Width, 0, map.Width, map.Height));
+            return;
+        }
+
+        for (var y = ty; y <= tey; ++y) {
+            for (var x = tx; x <= tex; ++x) {
+                var tileSpaceRect = r;
+                tileSpaceRect.Offset(-x * map.TileWidth, -y * map.TileHeight);
+
+                var lines = obstructionTiles.LinesForTile(obstructionLayer.GetTile(x, y));
+                if (lines == null) {
+                    continue;
+                }
+
+                Point intercept = Point.Zero;
+                foreach (var l in lines) {
+                    if (l.Touches(tileSpaceRect, ref intercept)) {
+                        var q = l;
+                        q.Offset(x * map.TileWidth, y * map.TileHeight);
+                        cb(q);
+                    }
+                }
+            }
+        }
     }
 
     public int XWin {
@@ -147,7 +213,7 @@ class Engine : Game {
         get { return ywin; }
         set {
             ywin = value;
-            if (ywin > map.Height * map.TileHeight- graph.YRes)
+            if (ywin > map.Height * map.TileHeight - graph.YRes)
                 ywin = map.Height * map.TileHeight - graph.YRes;
             if (ywin < 0) ywin = 0;
         }
@@ -158,12 +224,25 @@ class Engine : Game {
         int x = e.X - e.sprite.HotSpot.X - xwin;
         int y = e.Y - e.sprite.HotSpot.Y - ywin;
 
-        if (e.Visible) e.sprite.Draw(x, y, e.anim.frame);
+        if (e.Visible) {
+            e.sprite.Draw(x, y, e.anim.frame);
+        }
     }
 
     public void RenderEntities() {
         foreach (Entity e in entities) {
             RenderEntity(e);
+        }
+    }
+
+    public void RenderEntityHotspots() {
+        foreach (var e in entities) {
+            graph.DrawRect(new Rectangle(e.X - xwin, e.Y - ywin, e.sprite.HotSpot.Width, e.sprite.HotSpot.Height));
+            if (e.groundSurface.HasValue) {
+                var q = e.groundSurface.Value;
+                q.Offset(-xwin, -ywin);
+                graph.DrawLine(q, Color.Violet);
+            }
         }
     }
 
@@ -185,6 +264,8 @@ class Engine : Game {
     public void MapSwitch(string mapname) {
         map = Squared.Tiled.Map.Load(mapname, Content);
         mapfilename = mapname;
+
+        obstructionTiles.FirstTileID = map.Tilesets["obstiles"].FirstTileID;
 
         // nuke all existing entities, except the player
         entities.Clear();

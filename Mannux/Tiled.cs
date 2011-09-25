@@ -275,8 +275,9 @@ namespace Squared.Tiled {
         }
 
         public int GetTile(int x, int y) {
-            if ((x < 0) || (y < 0) || (x >= Width) || (y >= Height))
+            if ((x < 0) || (y < 0) || (x >= Width) || (y >= Height)) {
                 throw new InvalidOperationException();
+            }
 
             int index = (y * Width) + x;
             return Tiles[index];
@@ -307,7 +308,6 @@ namespace Squared.Tiled {
                 return;
             }
 
-            int i = 0;
             Vector2 destPos = new Vector2(rectangle.Left, rectangle.Top);
             Vector2 viewPos = viewportPosition;
 
@@ -337,7 +337,6 @@ namespace Squared.Tiled {
                 viewPos.Y = (float)Math.Floor(viewPos.Y);
             }
 
-            TileInfo info = new TileInfo();
             if (_TileInfoCache == null)
                 BuildTileInfoCache(tilesets);
 
@@ -345,12 +344,12 @@ namespace Squared.Tiled {
                 destPos.X = rectangle.Left;
 
                 for (int x = minX; x <= maxX; x++) {
-                    i = (y * Width) + x;
+                    var i = (y * Width) + x;
                     int index = Tiles[i] - 1;
 
-                    if ((index >= 0) && (index < _TileInfoCache.Length)) {
-                        info = _TileInfoCache[index];
-                        batch.Draw(info.Texture, destPos - viewPos, info.Rectangle, new Color(Color.White, this.Opacity));
+                    if (0 <= index && index < _TileInfoCache.Length) {
+                        var info = _TileInfoCache[index];
+                        batch.Draw(info.Texture, destPos - viewPos, info.Rectangle, new Color(1f, 1f, 1f, this.Opacity));
                     }
 
                     destPos.X += tileWidth;
@@ -524,7 +523,7 @@ namespace Squared.Tiled {
                 if (this.Y + offset.Y + this.Height > minY && this.Y + offset.Y < maxY) {
                     int x = (int)(this.X + offset.X - viewportPosition.X);
                     int y = (int)(this.Y + offset.Y - viewportPosition.Y);
-                    batch.Draw(_Texture, new Rectangle(x, y, this.Width, this.Height), new Rectangle(0, 0, _Texture.Width, _Texture.Height), new Color(Color.White, opacity));
+                    batch.Draw(_Texture, new Rectangle(x, y, this.Width, this.Height), new Rectangle(0, 0, _Texture.Width, _Texture.Height), new Color(1f, 1f, 1f, opacity));
                 }
         }
     }
@@ -540,7 +539,7 @@ namespace Squared.Tiled {
         public static Map Load(string filename, ContentManager content) {
             var result = new Map();
             XmlReaderSettings settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Prohibit;
 
             using (var stream = System.IO.File.OpenText(filename))
             using (var reader = XmlReader.Create(stream, settings))

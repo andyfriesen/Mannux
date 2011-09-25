@@ -10,7 +10,7 @@ using Cataract;
 using System.Drawing;
 
 namespace Sprites {
-
+#if false
     class ParticleSprite : ISprite {
         struct Particle {
             public float x, y;		// position relative to the position at which the particle will be rendered.
@@ -53,7 +53,7 @@ namespace Sprites {
             UpdateParticles();
 
             foreach (Particle p in particles) {
-                graph.DrawParticle((int)(x + p.x), (int)(y + p.y), p.size, r, g, b, a);
+                //graph.DrawParticle((int)(x + p.x), (int)(y + p.y), p.size, r, g, b, a);
             }
         }
 
@@ -70,5 +70,5 @@ namespace Sprites {
             return;
         }
     }
-
+#endif
 }

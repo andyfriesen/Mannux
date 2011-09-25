@@ -36,14 +36,14 @@ namespace Entities {
         const float groundaccel = 0.53f;
         const float airaccel = 0.2f;
 
-        const float maxxvelocity = 2.5f;
+        const float maxxvelocity = 2.5f; // 2.5f
         const float maxyvelocity = 250.0f;
 
         const float jumpvelocity = -3.33f;
 
         // Frames between shots
         const int fire_delay = 12;
-        const int jumpheight = 30;
+        const int jumpheight = 20;
 
         /*	const float groundfriction=0.08f;
             const float airfriction=0.08f;
@@ -78,7 +78,6 @@ namespace Entities {
         protected override void Update() {
             base.Update();
             CollisionThings();
-            anim.Update();
 
             if (firedelay > 0) firedelay--;
 
@@ -88,10 +87,12 @@ namespace Entities {
 
         // player states
         public void CollisionThings() {
-            if (touchingleftwall && vx < 0)
+            if (touchingleftwall && vx < 0) {
                 vx = 0;
-            if (touchingrightwall && vx > 0)
+            }
+            if (touchingrightwall && vx > 0) {
                 vx = 0;
+            }
 
             Entity temp = engine.DetectCollision(this);
             if (temp is Enemy) {
@@ -214,7 +215,6 @@ namespace Entities {
         }
 
         public void Stand() {
-
             if (input.Button(key_SPACE)) {
                 if (input.Axis(0) == 0) {
                     //shoot up
@@ -256,7 +256,7 @@ namespace Entities {
                 SetFallState();
                 return;
             } else {
-                //y = floor.atX(x + width / 2) - height;
+                PlaceOnGround();
             }
         }
 
@@ -291,16 +291,16 @@ namespace Entities {
                 SetWalkFireState();
             }
 
-            if (input.Axis(1) == 0)	// left
-			{
+            if (input.Axis(1) == 0) {
+                // left
                 vx -= groundaccel;
                 if (direction != Dir.left) {
                     direction = Dir.left;
                     anim.Set(AnimState.playerwalk[(int)Dir.left]);
                 }
             }
-            if (input.Axis(1) == 255) // right
-			{
+            if (input.Axis(1) == 255) {
+                // right
                 vx += groundaccel;
                 if (direction != Dir.right) {
                     direction = Dir.right;
@@ -317,8 +317,11 @@ namespace Entities {
                 SetJumpState();
             }
 
-            if (!touchingground)
+            if (touchingground) {
+                PlaceOnGround();
+            } else {
                 SetFallState();
+            }
         }
 
         public void Jump() {
@@ -423,11 +426,8 @@ namespace Entities {
                 else
                     SetStandState();
 
-
                 vy = 0;
-
-                // to avoid being embedded in the floor
-                //y = floor.atX(x + width / 2) - height;
+                PlaceOnGround();
             }
 
             vx = Vector.Decrease(vx, airfriction);

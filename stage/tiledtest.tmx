@@ -3,17 +3,17 @@
  <tileset firstgid="1" name="mannux" tilewidth="16" tileheight="16" spacing="1" margin="1">
   <image source="mantiles.png" width="320" height="716"/>
  </tileset>
- <tileset firstgid="757" name="Obstructions" tilewidth="16" tileheight="16">
-  <image source="obstiles.png" width="32" height="16"/>
+ <tileset firstgid="757" name="obstiles" tilewidth="16" tileheight="16">
+  <image source="obstiles.png" width="128" height="16"/>
  </tileset>
  <layer name="background" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3RKRICURBEwc+chPtfjX1fBSWwEyBLpMho1yXeNMaYZiwXY7xzV7GOTWxjF/s4xDFOcY5LXOMW93jEM17fX3M7/EePLnp00aOLHl306KJHFz266NFFjy56dNGjix5d9OiiRxc9uugBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAvH0hoO0pAnAAA
+   H4sIAAAAAAAAC+3UyUrDABSF4aS6dtZH8631HZxWzvNUh7MpiBQXbWJu4IN+mwQKuT+cadM053ERl3EV13ETt3EX9/EQj/EUz/ESr/EW73EQhzFhKVM9SpnX4yM+4yuaNr+YxEqstn/36Krv0Hep1GM9N9+IzdiK7diJ3djT4997LLNXenTfw17V6mGvavWwV7V6LLJXXfcd+i6VeiyyV3r012OZ++nRfQ97VauHvarVw14N5yiO4yRO4+zXs5/mvZ89m/3fWtuNoe8ypP22H0N/11jpUY8mtehRR18t9KjVY+jvGis9atGjFj3q0aMWPeqwV7XoUYsetehRix616FGLHrXoUYse4+L2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBh8A5TzTLdAnAAA
   </data>
  </layer>
  <layer name="foreground" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3UyQ3CMBAFUFIOtEBNrA2wNsBaL6OcRhaBSxQL8p70JfvksUb6kwkAAMDvWUc2kW3tQWgdI6fIufYgtO6RR+RZe5ARyx21iCwjq+LMcHJH7SL7yKE4M5zcUZfINXIrzgyj7KR8zz3WVJlufMpOyvfcY02PoVvZSfmee6zPffz7Xj79eR6Z9ZTpl7fs5L0x/x0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAurwAj0RiBUCcAAA=
+   H4sIAAAAAAAAC+3YOU7EMACF4TBXY2lYOpaGpUMU7DSIgp2GRWJtWI/iQ3AgXgpLwSQzsWOnMP8nPQkywSP8Yk8mRQEAANA/0yLoh4l8Hroxkc/L0figKCaUSWVqED7OjrKr7DW8bjzG8jk3N/PqYEFZVJY69HGmnCsXDa8bj7F8zs3RunrY6NBF6Ul5Vl4aXjceY/mcm6NDdXHUoY9NZUvZHnGeaTle2/NydK0ebpRb5a6hk33lYMgYx8qJctri/Uwx+t626fh/8K4OPpRP5auhj0vlasgY98qD8hjw/qYmQAyzylxP445FSO5WlJkE464qa86xGH3k3oudN3s9x/5/q+skZh85d1KyvcT+X1Otv1yl+vyw6vYtNEt1/abuOVeprl/WRZgU1zFrI5x7fxWD3QPpJVzMzxHbMXuWP3sNx5w7Oybrw1+KvYX1ES7V3LFGwqWYM7vuWCP+UnwnpIdwMebuVfl2jrFX+es6Z2UPb5Xfy59tLzxL9Bd6f+X2UIc9y5/v/VVTD26f7FVhqvel08XfObXH3B7c+Xafu7BXhamuj+Xi95zWHXP/rnBe47tgfHVzWffcMcWzFvipzj09AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9O8HIAIiNkCcAAA=
   </data>
  </layer>
  <layer name="Obstructions" width="100" height="100">
@@ -21,11 +21,10 @@
    <property name="type" value="obstructions"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3WMQrAMAhA0ZD7X7edO4V2KckQosJ74AX8ILYGAABQz93fId7ooEcOesT7u1FuV4zZvvU4S488Vnatxzl65KLHft8/qOKw7urzAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAKHps0885AnAAA
+   H4sIAAAAAAAAC+3a3U6DMBiA4cX7v17FnwPhoMlsAPsVPiDjeRKybINF+24tTB8P7uT9rW/jfMNTB03ONVSfCz3OU7eY6HGOuRaTpcesQXmWWkzWerTQI2atxUSP46zNUWtjHhljPdpE56jI87373lXPHBV5vnffO9raouxj/fhreJrjPxp/55ZjIj1azmvv0GPuGvq/Jq3H9I7fq11/1D977/d/kXF5lbHLkDUexrmPHtdSxixj/PSI0+NaMucVPeKsH9eix7Vkrht6xGWs53r0q6/N93xNPeKyelg/+uhxLRk9ymvpEZc11+vRR49r2aPH93jsz7h9jttX0vx3F1vex6VDvQaVLnrE9VwPznVgH5HzKx3ytfwtW4fj9P5PAkQsnfNxrNKhpkuu5zUtMq/qsq/SYelz0Kp0mZvX6sfq+/XtHW0d/1bOXdYd1QEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzvALqS+L2ECcAAA=
   </data>
  </layer>
  <objectgroup name="Entities" width="100" height="100">
-  <object name="Player" type="player" x="32" y="208" width="32" height="32"/>
-  <object name="Hopper" type="hopper" x="480" y="192" width="16" height="16"/>
+  <object name="Player" type="player" x="134" y="177" width="32" height="32"/>
  </objectgroup>
 </map>

@@ -2,7 +2,7 @@
  * The most common type of sprite.  One that's a bunch of images.  Each "frame" is its own image.
  */
 
-using Cataract;
+using Mannux;
 
 using Sprites;
 using Microsoft.Xna.Framework;
