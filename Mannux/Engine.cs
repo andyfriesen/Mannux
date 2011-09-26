@@ -91,7 +91,7 @@ class Engine : Game {
         graph.Begin();
         Render();
         graph.End();
-        RenderEntityHotspots();
+        //RenderEntityHotspots();
     }
 
     void ProcessEntities() {

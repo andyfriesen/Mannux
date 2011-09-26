@@ -124,7 +124,7 @@ namespace Entities {
             var y2 = y + h;
 
             const float MAX_GROUND_SLOPE = 1.1f; // anything steeper than this is not a walkable surface
-            const int GROUND_THRESHHOLD = 4;
+            const int GROUND_THRESHHOLD = 10;
 
             var oldGround = groundSurface;
             groundSurface = null;
@@ -141,30 +141,40 @@ namespace Entities {
                  * the surface that penetrates the entity's hotspot the most.
                  */
 
-                var ay1 = line.atX(x + vx + 1);
-                var ay2 = line.atX(x2 + vx - 1);
-
-                Point intercept;
-                if (ay1 < ay2) {
-                    intercept = new Point((int)(x + vx + 1), (int)ay1);
-                } else {
-                    intercept = new Point((int)(x2 + vx - 1), (int)ay2);
+                Point intercept = new Point(0, int.MaxValue);
+                var ax1 = x + vx + 1;
+                if ((ax1 > line.A.X || ax1 > line.B.X) &&
+                    (ax1 < line.A.X || ax1 < line.B.X)
+                ) {
+                    var ay1 = line.atX(ax1);
+                    intercept = new Point((int)ax1, (int)ay1);
                 }
 
-                if (y2 - 16 <= intercept.Y && intercept.Y < y2 + GROUND_THRESHHOLD) {
+                var ax2 = x2 + vx - 1;
+                var ay2 = line.atX(ax2);
+                if ((ax2 > line.A.X || ax2 > line.B.X) &&
+                    (ax2 < line.A.X || ax2 < line.B.X) &&
+                    ay2 < intercept.Y
+                ) {
+                    intercept = new Point((int)ax2, (int)ay2);
+                }
+                
+                if (y2 - 8 <= intercept.Y && intercept.Y < y2 + GROUND_THRESHHOLD) {
                     if (intercept.Y < groundInterceptY) {
                         groundInterceptY = intercept.Y;
                         groundSurface = line;
                     }
                 }
             };
-            var projectedY = y + vy;
+            float projectedY;
             if (groundSurface.HasValue && vy == 0.0f) {
                 if (vx > 0) {
                     projectedY = groundSurface.Value.atX(x + vx + sprite.HotSpot.Width);
                 } else {
                     projectedY = groundSurface.Value.atX(x + vx);
                 }
+            } else {
+                projectedY = y + vy;
             }
 
             var r = new Rectangle(

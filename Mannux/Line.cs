@@ -22,6 +22,14 @@ namespace Mannux {
         public Line(int x1, int y1, int x2, int y2)
             : this(new Point(x1, y1), new Point(x2, y2)) { }
 
+        public static bool operator ==(Line lhs, Line rhs) {
+            return lhs.a == rhs.a && lhs.b == rhs.b;
+        }
+
+        public static bool operator !=(Line lhs, Line rhs) {
+            return lhs.a != rhs.a || lhs.b != rhs.b;
+        }
+
         public float Slope { get { return slope; } }
         public float YIntercept { get { return yint; } }
 
