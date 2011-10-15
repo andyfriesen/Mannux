@@ -21,7 +21,7 @@ class Engine : Game {
     public InputHandler input;			// public because.  I'm a shoddy designer because I don't feel like making an accessor wah wah oh woe is me.
     private Squared.Tiled.Map map;
     private Squared.Tiled.Layer obstructionLayer;
-    ObstructionTileset obstructionTiles;
+    public ObstructionTileset obstructionTiles;
 
     public BitmapSprite tileset;
     public Entity cameraTarget;	// The engine focuses the camera on this entity
@@ -70,6 +70,7 @@ class Engine : Game {
             var s = l.Value.Properties.TryGetValue("type", out value);
             if (s && value == "obstructions") {
                 obstructionLayer = l.Value;
+                obstructionTiles.Layer = obstructionLayer;
                 //obstructionLayer.Opacity = 0;
                 break;
             }
@@ -91,7 +92,7 @@ class Engine : Game {
         graph.Begin();
         Render();
         graph.End();
-        //RenderEntityHotspots();
+        RenderEntityHotspots();
     }
 
     void ProcessEntities() {
@@ -116,6 +117,34 @@ class Engine : Game {
 
     public Line? IsObs(int x, int y, int w, int h) {
         return IsObs(new Rectangle(x, y, w, h));
+    }
+
+    public IEnumerable<Point[]> GetObsTiles(Rectangle r) {
+        var ty = r.Top / map.TileHeight;
+        var tey = r.Bottom / map.TileHeight;
+        var tx = r.Left / map.TileWidth;
+        var tex = r.Right / map.TileWidth;
+
+        if (ty < 0) {
+            yield break;
+        }
+        if (ty >= map.Height) {
+            yield break;
+        }
+        if (tx < 0) {
+            yield break;
+        }
+        if (tx >= map.Width) {
+            yield break;
+        }
+
+        for (var y = ty; y <= tey; ++y) {
+            for (var x = tx; x <= tex; ++x) {
+                var s = r;
+                s.Offset(-x * map.TileWidth, -y * map.TileHeight);
+                yield return obstructionTiles.PointsForTile(obstructionLayer.GetTile(x, y));
+            }
+        }
     }
 
     public Line? IsObs(Rectangle r) {
@@ -152,51 +181,6 @@ class Engine : Game {
         }
 
         return null;
-    }
-
-    public void GetObstructions(Rectangle r, Action<Line> cb) {
-        var ty = r.Top / map.TileHeight;
-        var tey = r.Bottom / map.TileHeight;
-        var tx = r.Left / map.TileWidth;
-        var tex = r.Right / map.TileWidth;
-
-        if (ty < 0) {
-            cb(new Line(0, 0, map.Width, 0));
-            return;
-        }
-        if (ty >= map.Height) {
-            cb(new Line(0, map.Height, map.Width, map.Height));
-            return;
-        }
-        if (tx < 0) {
-            cb(new Line(0, 0, 0, map.Height));
-            return;
-        }
-        if (tx >= map.Width) {
-            cb(new Line(map.Width, 0, map.Width, map.Height));
-            return;
-        }
-
-        for (var y = ty; y <= tey; ++y) {
-            for (var x = tx; x <= tex; ++x) {
-                var tileSpaceRect = r;
-                tileSpaceRect.Offset(-x * map.TileWidth, -y * map.TileHeight);
-
-                var lines = obstructionTiles.LinesForTile(obstructionLayer.GetTile(x, y));
-                if (lines == null) {
-                    continue;
-                }
-
-                Point intercept = Point.Zero;
-                foreach (var l in lines) {
-                    if (l.Touches(tileSpaceRect, ref intercept)) {
-                        var q = l;
-                        q.Offset(x * map.TileWidth, y * map.TileHeight);
-                        cb(q);
-                    }
-                }
-            }
-        }
     }
 
     public int XWin {
@@ -238,11 +222,11 @@ class Engine : Game {
     public void RenderEntityHotspots() {
         foreach (var e in entities) {
             graph.DrawRect(new Rectangle(e.X - xwin, e.Y - ywin, e.sprite.HotSpot.Width, e.sprite.HotSpot.Height));
-            if (e.groundSurface.HasValue) {
-                var q = e.groundSurface.Value;
-                q.Offset(-xwin, -ywin);
-                graph.DrawLine(q, Color.Violet);
-            }
+            //if (e.groundSurface.HasValue) {
+            //    var q = e.groundSurface.Value;
+            //    q.Offset(-xwin, -ywin);
+            //    graph.DrawLine(q, Color.Violet);
+            //}
         }
     }
 
@@ -266,6 +250,8 @@ class Engine : Game {
         mapfilename = mapname;
 
         obstructionTiles.FirstTileID = map.Tilesets["obstiles"].FirstTileID;
+        obstructionTiles.tileWidth = map.TileWidth;
+        obstructionTiles.tileHeight = map.TileHeight;
 
         // nuke all existing entities, except the player
         entities.Clear();

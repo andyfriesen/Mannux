@@ -20,7 +20,7 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Game</XnaOutputType>
-    <XnaProfile>HiDef</XnaProfile>
+    <XnaProfile>Reach</XnaProfile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -141,6 +141,7 @@
     <Compile Include="ObstructionTileset.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rect.cs" />
     <Compile Include="Sprites\BitmapSprite.cs" />
     <Compile Include="Sprites\ISprite.cs" />
     <Compile Include="Sprites\ParticleSprite.cs" />

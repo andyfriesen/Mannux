@@ -68,14 +68,13 @@ namespace Entities {
             : base(e, e.TabbySprite) {
             input = engine.input.Keyboard;
 
-            width = 12;
-
-            System.Console.WriteLine("Player {0}x{1}", width, height);
+            Width = 12;
 
             UpdateState = Walk;
         }
 
         protected override void Update() {
+            SenseGround();
             base.Update();
             CollisionThings();
 
@@ -87,13 +86,6 @@ namespace Entities {
 
         // player states
         public void CollisionThings() {
-            if (touchingleftwall && vx < 0) {
-                vx = 0;
-            }
-            if (touchingrightwall && vx > 0) {
-                vx = 0;
-            }
-
             Entity temp = engine.DetectCollision(this);
             if (temp is Enemy) {
                 if (hurtcount == 0) {
@@ -324,7 +316,7 @@ namespace Entities {
             }
         }
 
-        public void Jump() {
+        private void Jump() {
             if (!input.Button(key_C) || jumpcount == 0) {
                 jumpcount = 0;
                 vy = jumpvelocity / 2;
@@ -451,6 +443,12 @@ namespace Entities {
                 }
             }
 
+            if (input.Axis(0) == 0) {
+                vy = -1;
+            } else if (input.Axis(0) > 200) {
+                vy = 1;
+            }
+
             HandleGravity();
         }
 
@@ -474,7 +472,7 @@ namespace Entities {
         public void Fire(Dir d) {
             float bx = x, by = y + 14;
 
-            if (direction == Dir.right) bx += width;
+            if (direction == Dir.right) bx += Width;
             if (direction == Dir.left) bx -= 8;
 
             if (firedelay == 0) {

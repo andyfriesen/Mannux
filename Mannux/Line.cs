@@ -22,14 +22,6 @@ namespace Mannux {
         public Line(int x1, int y1, int x2, int y2)
             : this(new Point(x1, y1), new Point(x2, y2)) { }
 
-        public static bool operator ==(Line lhs, Line rhs) {
-            return lhs.a == rhs.a && lhs.b == rhs.b;
-        }
-
-        public static bool operator !=(Line lhs, Line rhs) {
-            return lhs.a != rhs.a || lhs.b != rhs.b;
-        }
-
         public float Slope { get { return slope; } }
         public float YIntercept { get { return yint; } }
 
@@ -140,8 +132,9 @@ namespace Mannux {
             return true;
         }
 
-        public bool Touches(Rectangle r, ref Point intercept) {
+        public bool Touches(Rectangle r, out Point intercept) {
             // bounding box type things
+            intercept = Point.Zero;
             if (a.X < r.Left && b.X < r.Left) return false;
             if (a.X > r.Right && b.X > r.Right) return false;
             if (a.Y < r.Top && b.Y < r.Top) return false;

@@ -15,15 +15,15 @@ namespace Entities
 		{
 			engine=e;
 
-			width=sprite.HotSpot.Width;
-			height=sprite.HotSpot.Height;
+			Width=sprite.HotSpot.Width;
+			Height=sprite.HotSpot.Height;
 			x=startx;
 			y=starty;
 			
 			direction=face;
 			open=false;
 			
-			width=16;
+			Width=16;
 			
 			map=mapname;
 			Newx=newx;

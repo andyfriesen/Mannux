@@ -21,10 +21,10 @@
    <property name="type" value="obstructions"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3a0U6DMBSA4cX3f16dzgvhoslsgPUcKJDxfQkxbkC0v2th83bjSj4/chvHuz910ORY9+p1ocdx6hYjPY4x1WI095g1qJ+5FqOlHi30iFlqMdJjP0tz1NKYR8ZYjzbROSryfHbfq8rMUZHns/te0doWZR/rx3/3pzn+q/F3bjkm0qPluvYKPabuoV81aT0mO37vdv8x9bNn3wNsHZd3Gbseeo2Hcc7R41zKmPUYPz3i9DiXnvOKHnHWj3PR41x6rht6xPVYz/XIq9/L2PKcesT16mH9yNHjXHr0KOfSI67XXK9Hjh7nskWPx3Ds77B9D9tPp/nvKtb8HZcO9WdLpYsecZn7wakO9Tm1yIlcX73qwHotn2XrsJ/s/yRAxNw1H/sqHWq69DV3rf2KLtsqHeZeB61Kl6l5rX6s/r7+ekVrx7+Va5dle3UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCP8AWbznLlAnAAA
+   H4sIAAAAAAAAC+3b0U6DMBQG4MX3f97J1At30wQbyjgtZRW+LyGLjp6y/tjCNu8ft9t9p412e41jqiPbNnvm0VprmrW/aiaj5DFl7eXRXqe2Vp5FqndF785jKYtUr9THmdegd+ZRyiLVa+lDHrFaa1mkei19XD2PiLU5am3MI8cqj22ic1Tk+dp9R3LkcdfMUZHna/cdyVHH3ZpF2sf68dc0m+M/N7bd0iaSx5br2ivksXQP/SqTrW1qx++M9x9L98Z7bqU+//vY9dBrPIxzHXmMJY1Zj/GTR5w8xtJzXpFHnPVjLPIYS891Qx5xPdZzedTL38vYs6Y84nrlYf2oI4+x9Mgj1ZJHXK+5Xh515DGWPfL4frb9eW6P5/bVaf67ipbzOOWQf7aUcpFHXM394FIOeU1Z1IlcX73KgXZbPsuWw3Fqv5MAEaVrPo6VcsgdkctU6OMxOzeWHs+gdK39Sq9c5v/7mPoonRtnkl5j62vNx2yeU/67/Of8cTr5mC856lxz7bLuCn/zAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFzXLz27mjFAnAAA
   </data>
  </layer>
  <objectgroup name="Entities" width="100" height="100">
-  <object name="Player" type="player" x="134" y="177" width="32" height="32"/>
+  <object name="Player" type="player" x="103" y="172" width="32" height="32"/>
  </objectgroup>
 </map>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using Sprites;
 using Mannux;
@@ -24,11 +25,14 @@ namespace Entities {
         protected const float gravity = 0.217f;
 
         // lots of fun state flags for fun funness.
-        public Line? groundSurface;
         protected Line? ceilingSurface;
         protected Line? leftSurface;
         protected Line? rightSurface;
-
+        public bool touchingground {
+            get {
+                return groundHeight.HasValue;
+            }
+        }
         protected bool touchingleftwall {
             get { return leftSurface != null; }
         }
@@ -37,25 +41,21 @@ namespace Entities {
             get { return rightSurface != null; }
         }
 
-        protected bool touchingground {
-            get { return groundSurface != null; }
-        }
-
         protected bool touchingceiling {
             get { return ceilingSurface != null; }
         }
 
         // More general purpose state things
-        protected float x = 0, y = 0;				//!< Position
-        protected int width, height;				//!< for convenience.  Size of the entity. (same as the sprite's hotspot)
-        protected float vx = 0, vy = 0;				//!< Velocity
-        public BitmapSprite sprite;					//!< Sprite
-        public AnimState anim = new AnimState();	//!< Sprite animation state
-        protected Dir direction = Dir.left;		//!< Which way is the entity facing?
+        protected float x = 0, y = 0;
+        public int Width, Height;
+        protected float vx = 0, vy = 0;
+        public BitmapSprite sprite;
+        public AnimState anim = new AnimState();
+        protected Dir direction = Dir.left;
 
         protected bool visible = true;
 
-        protected Action UpdateState;		//!< Updates the entity's state.  This delegate gets changed around a lot. ;)
+        protected Action UpdateState;
 
         protected Engine engine;
 
@@ -63,8 +63,8 @@ namespace Entities {
             engine = e;
             sprite = s;
 
-            width = sprite.HotSpot.Width;
-            height = sprite.HotSpot.Height;
+            Width = sprite.HotSpot.Width;
+            Height = sprite.HotSpot.Height;
 
             UpdateState = DoNothing;	// avoid null references
         }
@@ -78,10 +78,10 @@ namespace Entities {
 
         public bool Touches(Entity e) {
             return
-                (x <= e.x + e.width) &&
-                (y <= e.y + e.height) &&
-                (e.x <= x + width) &&
-                (e.y <= y + height)
+                (x <= e.x + e.Width) &&
+                (y <= e.y + e.Height) &&
+                (e.x <= x + Width) &&
+                (e.y <= y + Height)
             ;
         }
 
@@ -98,10 +98,9 @@ namespace Entities {
              * -- andy
              */
 
-            DoCollision();
-
             Update();
 
+            DoCollision();
             x += vx;
             y += vy;
         }
@@ -116,112 +115,88 @@ namespace Entities {
             return g;
         }
 
+        private const int GROUND_THRESHHOLD = 10;
+
         protected void DoCollision() {
-            var w = sprite.HotSpot.Width;
-            var h = sprite.HotSpot.Height;
+            var limit = 4;
+            do {
+                var r = new Rect(x + vx, y + vy, Width, Height);
+                var cr = engine.obstructionTiles.TestSAT(r);
+                if (!cr.HasValue) {
+                    break;
+                }
+                var mtv = cr.Value.mtv;
 
-            var x2 = x + w;
-            var y2 = y + h;
+                var velocity = new Vector2(vx, vy);
+                velocity += mtv;
 
-            const float MAX_GROUND_SLOPE = 1.1f; // anything steeper than this is not a walkable surface
-            const int GROUND_THRESHHOLD = 10;
+                vx = velocity.X;
+                vy = velocity.Y;
 
-            var oldGround = groundSurface;
-            groundSurface = null;
-            var groundInterceptY = int.MaxValue;
-            var floorRect = new Rectangle((int)(x + vx), (int)(y2 - 8), w, GROUND_THRESHHOLD);
+                --limit;
+            } while (limit > 0);
+            var count = 4 - limit;
+            if (count > 1) {
+                Console.WriteLine("Resolved in {0} steps", count);
+            }
+        }
+
+        const int SLOPE_THRESHHOLD = 8;
+        private float? groundHeight;
+
+        protected float? SenseGround() {
+            var r = new Rect(x + vx, y + vy + Height, Width, SLOPE_THRESHHOLD);
+            var x1 = x + vx;
+            var x2 = x1 + Width;
+
+            var bestIntercept = float.MaxValue;
+            groundHeight = null;
 
             Action<Line> cb = (line) => {
-                if (Math.Abs(line.Slope) > MAX_GROUND_SLOPE) {
-                    return;
-                }
-
                 /*
                  * I think what we want here is to track, for each direction,
                  * the surface that penetrates the entity's hotspot the most.
                  */
 
-                Point intercept = new Point(0, int.MaxValue);
-                var ax1 = x + vx + 1;
-                if ((ax1 > line.A.X || ax1 > line.B.X) &&
-                    (ax1 < line.A.X || ax1 < line.B.X)
+                var intercept = float.MaxValue;
+                if ((x1 > line.A.X || x1 > line.B.X) &&
+                    (x1 < line.A.X || x1 < line.B.X)
                 ) {
-                    var ay1 = line.atX(ax1);
-                    intercept = new Point((int)ax1, (int)ay1);
+                    var ay1 = line.atX(x1);
+                    intercept = ay1;
                 }
 
-                var ax2 = x2 + vx - 1;
-                var ay2 = line.atX(ax2);
-                if ((ax2 > line.A.X || ax2 > line.B.X) &&
-                    (ax2 < line.A.X || ax2 < line.B.X) &&
-                    ay2 < intercept.Y
+                var ay2 = line.atX(x2);
+                if ((x2 > line.A.X || x2 > line.B.X) &&
+                    (x2 < line.A.X || x2 < line.B.X) &&
+                    ay2 < intercept
                 ) {
-                    intercept = new Point((int)ax2, (int)ay2);
+                    intercept = ay2;
                 }
-                
-                if (y2 - 8 <= intercept.Y && intercept.Y < y2 + GROUND_THRESHHOLD) {
-                    if (intercept.Y < groundInterceptY) {
-                        groundInterceptY = intercept.Y;
-                        groundSurface = line;
-                    }
+
+                if (intercept < bestIntercept) {
+                    bestIntercept = intercept;
                 }
             };
-            float projectedY;
-            if (groundSurface.HasValue && vy == 0.0f) {
-                if (vx > 0) {
-                    projectedY = groundSurface.Value.atX(x + vx + sprite.HotSpot.Width);
-                } else {
-                    projectedY = groundSurface.Value.atX(x + vx);
-                }
-            } else {
-                projectedY = y + vy;
+
+            engine.obstructionTiles.Test(r, cb);
+            if (bestIntercept < float.MaxValue) {
+                groundHeight = bestIntercept;
             }
 
-            var r = new Rectangle(
-                (int)(x + vx),
-                (int)(projectedY),
-                sprite.HotSpot.Width,
-                sprite.HotSpot.Height + GROUND_THRESHHOLD
-            );
-
-            engine.GetObstructions(r, cb);
+            return groundHeight;
         }
 
-        private float LineAtX(Line l, float x) {
-            if (x < l.A.X && x < l.B.X) {
-                x = Math.Min(l.A.X, l.B.X);
-            }
-            if (x > l.A.X && x > l.B.X) {
-                x = Math.Max(l.A.X, l.B.X);
-            }
-            return l.atX(x);
-        }
-
-        protected void PlaceOnGround() {
-            if (groundSurface == null) {
-                return;
-            }
-
-            var y1 = LineAtX(groundSurface.Value, x);
-            var y2 = LineAtX(groundSurface.Value, x + sprite.HotSpot.Width);
-
-            var newy = Math.Min(y1, y2) - height;
-
-            var dy = Math.Abs((int)y - (int)newy);
-            if (dy > 1 && dy > vx) {
-                Console.WriteLine("Moving from {0} to {1} dy={2}", y + height, newy + height, dy);
-                y = newy;
-            }
-        }
-
-        public void HandleGravity() {
-            if (!touchingground) {
-                vy += gravity;
-            } else {
+        public void PlaceOnGround() {
+            if (groundHeight.HasValue) {
+                y = groundHeight.Value - Height;
                 vy = 0;
             }
         }
 
+        public void HandleGravity() {
+            vy += gravity;
+        }
 
         // -Accessors
 
@@ -235,38 +210,14 @@ namespace Entities {
             set { y = value; }
         }
 
-        public int VX {
-            get { return (int)vx; }
-            set { vx = value; }
-        }
-
-        public int VY {
-            get { return (int)vy; }
-            set { vy = value; }
-        }
-
-
-        public int Width {
-            get { return (int)Height; }
-            set { height = value; }
-        }
-
-        public int Height {
-            get { return (int)height; }
-            set { height = value; }
-        }
-
         public bool Visible {
             get { return visible; }
             set { visible = value; }
         }
 
-
         public Dir Facing {
             get { return direction; }
             set { direction = value; }
         }
-
     }
-
 }
